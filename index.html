@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SPOILER WARNING</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&display=swap');
+
+        /* === GERAL === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            height: 100%; width: 100%; overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #050505; color: white;
+            user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+
+        /* === FUNDO === */
+        #background-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('fundo.jpg') no-repeat center center;
+            background-size: cover; 
+            z-index: 1;
+            transition: filter 1s, opacity 1s;
+        }
+
+        /* === CAMADA DE CLIQUES === */
+        #interactive-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20; pointer-events: none; 
+        }
+
+        .click-spot {
+            position: absolute;
+            cursor: pointer;
+            pointer-events: auto;
+            
+            /* === MODO INVISÍVEL (FINAL) === */
+            opacity: 0; /* Totalmente transparente */
+        }
+
+        /* === POSIÇÕES REAJUSTADAS (Mais para o centro) === */
+        
+        /* Galo (Movido para a DIREITA) */
+        #rooster-spot {
+            top: 38%;      
+            left: 12%;     /* Mudou de 5% para 12% (mais para dentro) */
+            width: 18%;    
+            height: 28%;   
+        }
+
+        /* Pato (Movido para a ESQUERDA) */
+        #duck-spot {
+            top: 40%;      
+            right: 12%;    /* Mudou de 5% para 12% (mais para dentro) */
+            width: 18%;    
+            height: 28%;   
+        }
+
+        /* === INTERFACE === */
+        .ui-layer {
+            position: relative; z-index: 30;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; text-align: center; pointer-events: none;
+        }
+
+        h1.spoiler-title {
+            font-size: 4rem; margin-bottom: 2rem; opacity: 0; pointer-events: none;
+        }
+        
+        .blink-fast { animation: blinkFast 0.2s infinite !important; opacity: 1 !important; color: white; text-shadow: 0 0 20px white; }
+        @keyframes blinkFast { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+
+        .input-area {
+            pointer-events: auto;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            width: 80%; max-width: 350px;
+            background: rgba(0,0,0,0.6); 
+            padding: 20px; border-radius: 10px; backdrop-filter: blur(4px);
+            margin-top: 35vh; 
+        }
+
+        input {
+            background: transparent; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            color: #fff; padding: 10px; width: 100%; text-align: center;
+            font-family: 'Montserrat', sans-serif; font-size: 1rem; outline: none;
+        }
+
+        .feedback-text { font-size: 0.8rem; color: #ddd; min-height: 20px; opacity: 0; transition: opacity 0.5s; font-style: italic; }
+
+        /* === TELA FINAL === */
+        #end-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out;
+        }
+        .final-text { font-size: 1.2rem; color: #ddd; margin-bottom: 30px; text-align: center; padding: 0 20px;}
+        .digit-reveal { font-size: 6rem; font-weight: 900; color: #fff; opacity: 0; transform: scale(0.8); transition: all 1s; }
+        .digit-reveal.show { opacity: 1; transform: scale(1); }
+        .label-unlock { font-size: 0.8rem; color: #666; letter-spacing: 4px; text-transform: uppercase; }
+
+    </style>
+</head>
+<body>
+
+    <div id="background-image"></div>
+    
+    <div id="interactive-layer">
+        <div class="click-spot" id="rooster-spot"></div>
+        <div class="click-spot" id="duck-spot"></div>
+    </div>
+
+    <div class="ui-layer" id="game-ui">
+        <h1 class="spoiler-title" id="main-title">SPOILER</h1> 
+        <div class="input-area">
+            <input type="text" id="spoiler-input" placeholder="Tente evitar o spoiler..." autocomplete="off">
+            <div class="feedback-text" id="feedback"></div>
+        </div>
+    </div>
+
+    <div id="end-screen">
+        <div class="final-text">Primeiras conversas guardam os melhores segredos.</div>
+        <div class="label-unlock">Dígito Desbloqueado</div>
+        <div class="digit-reveal" id="final-digit">9</div>
+    </div>
+
+    <script>
+        let roosterCaught = false;
+        let duckCaught = false;
+
+        function flashSpot(element) {
+            // Um flash branco sutil para a pessoa saber que clicou certo
+            element.style.opacity = 1;
+            element.style.backgroundColor = "rgba(255, 255, 255, 0.3)"; 
+            setTimeout(() => { 
+                element.style.backgroundColor = "transparent"; 
+                element.style.opacity = 0;
+            }, 200); 
+        }
+
+        document.getElementById('rooster-spot').onclick = function() {
+            if(!roosterCaught) {
+                roosterCaught = true;
+                flashSpot(this);
+                checkWin();
+            }
+        };
+
+        document.getElementById('duck-spot').onclick = function() {
+            if(!duckCaught) {
+                duckCaught = true;
+                flashSpot(this);
+                checkWin();
+            }
+        };
+
+        function checkWin() {
+            if(roosterCaught && duckCaught) {
+                triggerEndSequence();
+            }
+        }
+
+        function triggerEndSequence() {
+            const bgImage = document.getElementById('background-image');
+            const ui = document.getElementById('game-ui');
+            const endScreen = document.getElementById('end-screen');
+            const title = document.getElementById('main-title');
+
+            title.classList.add('blink-fast');
+            
+            setTimeout(() => {
+                bgImage.style.filter = "grayscale(100%) brightness(0%)";
+                ui.style.opacity = 0;
+                // Desativa os cliques para não atrapalhar o final
+                document.getElementById('rooster-spot').style.display = 'none';
+                document.getElementById('duck-spot').style.display = 'none';
+            }, 800);
+
+            setTimeout(() => {
+                endScreen.style.opacity = 1;
+                endScreen.style.pointerEvents = "auto";
+            }, 2000);
+
+            setTimeout(() => {
+                document.getElementById('final-digit').classList.add('show');
+            }, 3500);
+        }
+
+        const input = document.getElementById('spoiler-input');
+        const feedback = document.getElementById('feedback');
+        input.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' || e.target.value.length > 0) {
+                feedback.style.opacity = 1;
+                const val = input.value.toLowerCase();
+                if(val.includes('galo') || val.includes('pato')) {
+                    feedback.innerText = "Sim! Toque neles na imagem.";
+                } else {
+                    feedback.innerText = "Não adianta... fugir do spoiler nunca funciona.";
+                }
+                setTimeout(() => { feedback.style.opacity = 0; }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
