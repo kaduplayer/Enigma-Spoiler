@@ -23,7 +23,7 @@ html, body {
   overflow: hidden;
 }
 
-/* ===== START ===== */
+/* ===== BOTÃO INICIAR ===== */
 #start-screen {
   position: fixed;
   inset: 0;
@@ -31,18 +31,17 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 50;
 }
 
-#start-button {
+#start-btn {
+  padding: 14px 40px;
+  border: 1px solid white;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.4);
   color: white;
-  padding: 18px 50px;
-  letter-spacing: 4px;
-  border-radius: 40px;
+  border-radius: 30px;
+  font-size: 1.1rem;
   cursor: pointer;
-  font-size: 1rem;
 }
 
 /* ===== STORY ===== */
@@ -54,10 +53,12 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px;
   text-align: center;
+  padding: 40px;
   font-size: 1.3rem;
+  line-height: 1.6;
   opacity: 0;
+  transition: opacity 2s ease;
   z-index: 10;
 }
 
@@ -66,77 +67,60 @@ html, body {
   transition: opacity 1.5s ease;
 }
 
-/* ===== SALA ===== */
+/* ===== SALA ESCURA ===== */
 #dark-room {
   position: fixed;
   inset: 0;
   background: #050505;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   opacity: 0;
   pointer-events: none;
   transition: opacity 2s ease;
+  z-index: 5;
 }
 
+/* Luz */
 #room-light {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, rgba(255,240,200,0.15), transparent 70%);
+  background: radial-gradient(circle at center, rgba(255,240,200,0.15), black 70%);
   opacity: 0;
   transition: opacity 3s ease;
 }
 
 /* ===== COFRE CSS ===== */
-#css-chest-container {
-  position: relative;
+#css-chest {
   width: 220px;
-  height: 280px;
+  height: 260px;
+  background: linear-gradient(145deg, #333, #222);
+  border-radius: 12px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 10px 40px rgba(0,0,0,0.7);
   opacity: 0;
-  transition: opacity 2s ease, transform 1.2s ease;
+  transition: opacity 2s ease, transform 1s ease;
+  z-index: 2;
 }
 
-.chest-body {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(145deg, #3a3a3a, #222);
-  border-radius: 14px;
-  box-shadow: inset 0 0 30px rgba(0,0,0,.8);
-  position: relative;
-}
-
-.chest-door {
-  position: absolute;
-  inset: 15px;
-  background: linear-gradient(135deg, #333, #222);
-  border-radius: 10px;
-}
-
-.chest-handle {
-  position: absolute;
-  top: 50%;
-  right: 25px;
-  width: 36px;
-  height: 36px;
-  background: radial-gradient(circle, #555, #333);
-  border-radius: 50%;
-  transform: translateY(-50%);
-}
-
-/* ===== BOTÃO ===== */
-#approach-button {
-  position: absolute;
-  bottom: 80px;
-  background: transparent;
+/* ===== BOTÃO APROXIMAR ===== */
+#approach {
+  margin-top: 40px;
+  padding: 12px 32px;
   border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
   color: white;
-  padding: 12px 36px;
-  letter-spacing: 3px;
   border-radius: 30px;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  cursor: pointer;
   opacity: 0;
+  pointer-events: auto;
+  transition: opacity 1s ease, transform 0.6s ease;
+  z-index: 10;
 }
 
-/* ===== LOCK ===== */
+/* ===== TELA DA TRAVA ===== */
 #lock-screen {
   position: fixed;
   inset: 0;
@@ -148,11 +132,17 @@ html, body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 1.5s ease;
+  z-index: 20;
+}
+
+.lock-box {
+  text-align: center;
 }
 
 .lock {
   display: flex;
   gap: 12px;
+  justify-content: center;
 }
 
 .digit {
@@ -164,67 +154,58 @@ html, body {
 .digit button {
   background: none;
   border: none;
-  color: #aaa;
+  color: #888;
   font-size: 1.4rem;
+  cursor: pointer;
 }
 
 .digit span {
   font-size: 2rem;
   margin: 6px 0;
 }
-
-/* ===== ZOOM ===== */
-.zoom-in {
-  transform: scale(1.4);
-}
 </style>
 </head>
 
 <body>
 
+<!-- INICIAR -->
 <div id="start-screen">
-  <button id="start-button">INICIAR</button>
+  <button id="start-btn">INICIAR</button>
 </div>
 
+<!-- STORY -->
 <div id="story">
-  <div class="story-line" id="line"> </div>
+  <div class="story-line" id="line"></div>
 </div>
 
+<!-- SALA -->
 <div id="dark-room">
   <div id="room-light"></div>
-
-  <div id="css-chest-container">
-    <div class="chest-body">
-      <div class="chest-door">
-        <div class="chest-handle"></div>
-      </div>
-    </div>
-  </div>
-
-  <button id="approach-button">APROXIMAR-SE</button>
+  <div id="css-chest"></div>
+  <button id="approach">APROXIMAR-SE</button>
 </div>
 
+<!-- TRAVA -->
 <div id="lock-screen">
-  <div>
-    <h3 style="text-align:center;margin-bottom:20px;">Digite a combinação</h3>
+  <div class="lock-box">
+    <h2>Digite a combinação</h2>
     <div class="lock" id="lock"></div>
   </div>
 </div>
 
-<audio id="ambient" src="ambiente.mp3" loop></audio>
-
 <script>
-const startBtn = document.getElementById("start-button");
+const startBtn = document.getElementById("start-btn");
 const startScreen = document.getElementById("start-screen");
 const story = document.getElementById("story");
 const line = document.getElementById("line");
+
 const darkRoom = document.getElementById("dark-room");
 const roomLight = document.getElementById("room-light");
-const chest = document.getElementById("css-chest-container");
-const approach = document.getElementById("approach-button");
+const chest = document.getElementById("css-chest");
+const approach = document.getElementById("approach");
+
 const lockScreen = document.getElementById("lock-screen");
 const lock = document.getElementById("lock");
-const ambient = document.getElementById("ambient");
 
 const text = [
   "Não foi feito para ser encontrado.",
@@ -232,63 +213,83 @@ const text = [
   "Cinco números guardam o que foi deixado."
 ];
 
-const PASSWORD = [6,2,1,4,9];
-let digits = [0,0,0,0,0];
+let i = 0;
 
 startBtn.onclick = () => {
-  startScreen.style.display = "none";
-  ambient.volume = 0.4;
-  ambient.play();
-  startStory();
+  startScreen.style.opacity = 0;
+  setTimeout(() => startScreen.remove(), 800);
+  story.style.opacity = 1;
+  nextLine();
 };
 
-function startStory(){
-  story.style.opacity = 1;
-  let i = 0;
-
-  function next(){
-    if(i>0) line.style.opacity = 0;
-    if(i < text.length){
-      setTimeout(()=>{
-        line.textContent = text[i];
-        line.style.opacity = 1;
-        i++;
-        setTimeout(next, 3000);
-      }, 1000);
-    } else {
-      setTimeout(()=>{
-        story.style.opacity = 0;
-        startRoom();
-      }, 2000);
-    }
+function nextLine() {
+  if (i >= text.length) {
+    setTimeout(showRoom, 2000);
+    return;
   }
-  next();
+  line.textContent = text[i];
+  line.style.opacity = 1;
+  setTimeout(() => {
+    line.style.opacity = 0;
+    i++;
+    setTimeout(nextLine, 1200);
+  }, 2500);
 }
 
-function startRoom(){
+function showRoom() {
+  story.style.opacity = 0;
   darkRoom.style.opacity = 1;
   darkRoom.style.pointerEvents = "auto";
-  setTimeout(()=>roomLight.style.opacity=1,500);
-  setTimeout(()=>chest.style.opacity=1,2000);
-  setTimeout(()=>approach.style.opacity=1,3500);
+
+  setTimeout(() => roomLight.style.opacity = 1, 500);
+  setTimeout(() => chest.style.opacity = 1, 1800);
+  setTimeout(() => approach.style.opacity = 1, 3000);
 }
 
-approach.onclick = ()=>{
-  chest.classList.add("zoom-in");
-  setTimeout(()=>{
+/* 🔑 BOTÃO FUNCIONANDO */
+approach.onclick = () => {
+  chest.style.transform = "scale(1.2)";
+  setTimeout(() => {
     darkRoom.style.opacity = 0;
     lockScreen.style.opacity = 1;
     lockScreen.style.pointerEvents = "auto";
-    renderLock();
-  },1200);
+    createLock();
+  }, 900);
 };
 
-function renderLock(){
-  lock.innerHTML="";
-  digits.forEach((n,i)=>{
-    const d=document.createElement("div");
-    d.className="digit";
-    const up=document.createElement("button");
+const PASSWORD = [6,2,1,4,9];
+let digits = [0,0,0,0,0];
+
+function createLock() {
+  lock.innerHTML = "";
+  digits.forEach((n,i) => {
+    const d = document.createElement("div");
+    d.className = "digit";
+
+    const up = document.createElement("button");
+    up.textContent = "▲";
+    up.onclick = () => change(i,1);
+
+    const span = document.createElement("span");
+    span.textContent = n;
+
+    const down = document.createElement("button");
+    down.textContent = "▼";
+    down.onclick = () => change(i,-1);
+
+    d.append(up,span,down);
+    lock.appendChild(d);
+  });
+}
+
+function change(i,delta){
+  digits[i]=(digits[i]+delta+10)%10;
+  createLock();
+}
+</script>
+
+</body>
+</html>
     up.textContent="▲";
     up.onclick=()=>change(i,1);
     const span=document.createElement("span");
