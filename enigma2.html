@@ -2,335 +2,265 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Enigma de Conexão</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Reset básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* --- RESET E GERAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
-            height: 100%;
-            font-family: 'Montserrat', sans-serif;
-            overflow: hidden; /* Evita barras de rolagem */
+            height: 100%; font-family: 'Montserrat', sans-serif;
+            overflow: hidden; background-color: #000;
         }
 
-        /* --- Configuração do Fundo --- */
+        /* --- FUNDO --- */
         #background-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* IMPORTANTE: O nome do arquivo deve ser exatamente este */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('image_10.png') no-repeat center center;
             background-size: cover;
             z-index: -1;
+            transition: all 2s ease-in-out; /* Transição bem lenta para o efeito final */
+        }
+        
+        /* Estado final do fundo: Escuro e desfocado */
+        body.final-state #background-container {
+            filter: brightness(0.2) blur(4px) grayscale(30%);
+            transform: scale(1.05); /* Leve zoom in dramático */
         }
 
-        /* --- Overlay de Sucesso (Animação de Brilho) --- */
-        #success-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Permite clicar através dele */
-            opacity: 0;
-            transition: opacity 1s ease;
-            z-index: 10;
-            /* Gradiente radial que vai pulsar */
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(147,112,219,0.1) 60%, transparent 100%);
-        }
-
-        #success-overlay.active {
-            opacity: 1;
-            animation: pulseGlow 2s infinite ease-in-out;
-        }
-
-        @keyframes pulseGlow {
-            0% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 0.5; }
-        }
-
-        /* --- Container Principal do Conteúdo --- */
+        /* --- CONTEÚDO PRINCIPAL (PERGUNTA) --- */
         .main-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            position: relative;
-            z-index: 20; /* Garante que fique acima do fundo */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100vh; color: white; text-align: center; padding: 25px;
+            position: relative; z-index: 20;
+            transition: opacity 1s ease;
         }
 
-        /* Estilo do Título */
         h1.title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 40px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            letter-spacing: 1px;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 700; margin-bottom: 30px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
         }
 
-        /* Container do Input e Botão */
+        /* --- INPUT E BOTÃO --- */
         .input-group {
-            display: flex;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.15); /* Fundo semi-transparente */
-            padding: 10px;
-            border-radius: 30px;
-            backdrop-filter: blur(5px); /* Efeito de desfoque moderno */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex; gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px; border-radius: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            width: 100%; max-width: 480px;
+            transition: transform 0.3s;
         }
 
         input[type="text"] {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 25px;
-            outline: none;
-            font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
-            width: 250px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
+            flex-grow: 1; padding: 12px 20px; border: none; border-radius: 30px;
+            outline: none; font-size: 1rem; font-family: 'Montserrat', sans-serif;
+            background: rgba(255, 255, 255, 0.95); color: #333;
         }
 
         button#confirm-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            background-color: #6a5acd; /* Um roxo/azul moderno */
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        button#confirm-btn:hover {
-            background-color: #836FFF;
-            transform: translateY(-2px);
-        }
-
-        /* Mensagens de Feedback */
-        #feedback-message {
-            margin-top: 25px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            min-height: 1.4em; /* Reserva espaço para não pular a tela */
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-        }
-        .feedback-success { color: #7FFF00; } /* Verde claro */
-        .feedback-error { color: #FFD700; }   /* Amarelo/Dourado */
-
-        /* --- Área de Dicas --- */
-        #hint-wrapper {
-            margin-top: 30px;
-            min-height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #hint-text {
-            font-size: 1rem;
-            font-style: italic;
-            background: rgba(0,0,0,0.4);
-            padding: 10px 20px;
-            border-radius: 10px;
-            opacity: 0; /* Começa invisível para transição */
-            transition: opacity 0.5s ease;
-            max-width: 80%;
-        }
-
-        /* Botão de Dicas (Canto Inferior Direito) */
-        #hint-toggle-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 12px 20px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 25px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: bold;
-            display: none; /* Oculto inicialmente */
-            backdrop-filter: blur(5px);
+            padding: 12px 28px; border: none; border-radius: 30px;
+            background: linear-gradient(135deg, #8A2BE2, #4B0082);
+            color: white; font-size: 1rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
             transition: all 0.3s ease;
-            z-index: 30;
+        }
+        button#confirm-btn:active { transform: scale(0.95); }
+
+        /* --- FEEDBACK E DICAS --- */
+        #feedback-message {
+            margin-top: 25px; font-size: 1.1rem; min-height: 1.5em;
+            opacity: 0; transition: opacity 0.5s ease;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .feedback-error { color: #FFD700; font-weight: 600; }
+
+        #hint-toggle-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            padding: 10px 20px; background: rgba(0, 0, 0, 0.6);
+            color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px; cursor: pointer; font-size: 0.9rem;
+            display: none; backdrop-filter: blur(4px); z-index: 30;
+            transition: all 0.3s;
+        }
+        #hint-display {
+            margin-top: 20px; font-style: italic; color: #ddd;
+            background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 15px;
+            opacity: 0; transition: opacity 0.5s; display: none;
         }
 
-        #hint-toggle-btn:hover {
-            background-color: rgba(255, 255, 255, 0.4);
-            border-color: white;
+        /* --- SEQUÊNCIA FINAL (CINEMATOGRÁFICA) --- */
+        #final-sequence {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 50; pointer-events: none; /* Não clicável */
+            text-align: center;
         }
 
-        /* Responsividade básica para celulares */
+        .narrative-text {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            font-weight: 300; color: #fff;
+            opacity: 0; transform: translateY(20px);
+            transition: all 1.5s ease-out;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            max-width: 80%; line-height: 1.5;
+        }
+
+        .digit-container {
+            opacity: 0; transition: opacity 1.5s ease;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .unlock-label {
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 4px;
+            color: #aaa; margin-bottom: 10px; font-weight: 400;
+        }
+
+        .the-number {
+            font-size: 8rem; font-weight: 100; color: #fff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            transform: scale(0.9);
+            /* Animação de pulsação suave (respiração) */
+            animation: breathe 4s infinite ease-in-out;
+        }
+
+        /* Classes de ativação */
+        .visible { opacity: 1 !important; transform: translateY(0) !important; }
+        
+        @keyframes breathe {
+            0%, 100% { opacity: 0.8; transform: scale(0.95); text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            50% { opacity: 1; transform: scale(1); text-shadow: 0 0 40px rgba(255,255,255,1); }
+        }
+
         @media (max-width: 600px) {
-            h1.title { font-size: 1.8rem; }
-            .input-group { flex-direction: column; padding: 15px; border-radius: 20px; }
+            .input-group { flex-direction: column; background: rgba(0,0,0,0.5); padding: 15px; }
             input[type="text"] { width: 100%; text-align: center; margin-bottom: 10px; }
             button#confirm-btn { width: 100%; }
-            #hint-toggle-btn { bottom: 20px; right: 20px; padding: 10px 15px; font-size: 0.9rem; }
+            .the-number { font-size: 6rem; }
         }
     </style>
 </head>
 <body>
 
     <div id="background-container"></div>
-    <div id="success-overlay"></div>
 
-    <div class="main-content">
+    <div class="main-content" id="quiz-ui">
         <h1 class="title">O que conecta tudo isso?</h1>
 
-        <div class="input-group" id="input-area">
-            <input type="text" id="answer-input" placeholder="Digite sua resposta..." autocomplete="off">
+        <div class="input-group">
+            <input type="text" id="answer-input" placeholder="Sua resposta..." autocomplete="off">
             <button id="confirm-btn">Confirmar</button>
         </div>
 
         <div id="feedback-message"></div>
-
-        <div id="hint-wrapper">
-            <div id="hint-text" style="display: none;"></div>
-        </div>
+        <div id="hint-display"></div>
     </div>
 
     <button id="hint-toggle-btn">Quer dicas?</button>
 
+    <div id="final-sequence">
+        <p class="narrative-text" id="final-text">Foi essa frase que iniciou tudo isso.</p>
+        
+        <div class="digit-container" id="digit-box">
+            <span class="unlock-label">Dígito desbloqueado</span>
+            <span class="the-number">1</span>
+        </div>
+    </div>
 
     <script>
         // --- Configurações ---
-        // Respostas aceitas (deixe tudo em minúsculo aqui para facilitar a comparação)
         const validAnswers = [
-            "bora assistir juntos?",
-            "bora assistir juntos", // Aceita sem interrogação também por flexibilidade
-            "bora ler juntos?",
-            "bora ler juntos"
+            "bora assistir juntos?", "bora assistir juntos",
+            "bora ler juntos?", "bora ler juntos"
         ];
 
         const hintsList = [
-            "Pense no que vocês sempre faziam quando viam ou liam as coisas dessas referências.",
-            "Não é um objeto… é algo que vocês combinavam de fazer.",
-            "É uma frase que vocês já trocaram algumas vezes."
+            "Não é algo específico que você vê aqui.",
+            "Tudo isso começou com uma pergunta.",
+            "Bora…"
         ];
 
-        // --- Variáveis de Estado ---
         let wrongAttempts = 0;
-        let currentHintIndex = 0;
+        let hintIndex = 0;
         let isSolved = false;
 
-        // --- Elementos do DOM ---
-        const inputField = document.getElementById('answer-input');
-        const confirmBtn = document.getElementById('confirm-btn');
-        const feedbackMsg = document.getElementById('feedback-message');
-        const hintToggleBtn = document.getElementById('hint-toggle-btn');
-        const hintTextDiv = document.getElementById('hint-text');
-        const successOverlay = document.getElementById('success-overlay');
-        const inputArea = document.getElementById('input-area');
+        // --- Elementos ---
+        const ui = document.getElementById('quiz-ui');
+        const input = document.getElementById('answer-input');
+        const btn = document.getElementById('confirm-btn');
+        const feedback = document.getElementById('feedback-message');
+        const hintBtn = document.getElementById('hint-toggle-btn');
+        const hintDisp = document.getElementById('hint-display');
 
-        // --- Funções ---
-
+        // --- Lógica Principal ---
         function checkAnswer() {
             if (isSolved) return;
+            let val = input.value.trim().toLowerCase().replace(/[.!]+$/, '');
 
-            // Pega o valor, remove espaços extras nas pontas e converte para minúsculo
-            let userAnswer = inputField.value.trim().toLowerCase();
-
-            // Remove pontuação final extra se o usuário colocar (ex: "juntos." ou "juntos!")
-            userAnswer = userAnswer.replace(/[.!]$/, '');
-
-            if (validAnswers.includes(userAnswer)) {
-                handleSuccess();
+            if (validAnswers.includes(val)) {
+                startFinalSequence();
             } else {
                 handleError();
             }
         }
 
-        function handleSuccess() {
-            isSolved = true;
-            feedbackMsg.innerText = "Resposta correta!";
-            feedbackMsg.className = "feedback-success";
-            feedbackMsg.style.opacity = 1;
-
-            // Ativa a animação
-            successOverlay.classList.add('active');
-
-            // Esconde a área de input e dicas para limpar a tela
-            inputArea.style.display = 'none';
-            hintToggleBtn.style.display = 'none';
-            document.getElementById('hint-wrapper').style.display = 'none';
-        }
-
         function handleError() {
-            feedbackMsg.innerText = "Hmm… não exatamente.";
-            feedbackMsg.className = "feedback-error";
-            feedbackMsg.style.opacity = 1;
-            
-            // Treme a caixa de input levemente
-            inputArea.style.transform = 'translateX(5px)';
-            setTimeout(() => { inputArea.style.transform = 'translateX(-5px)'; }, 100);
-            setTimeout(() => { inputArea.style.transform = 'translateX(0)'; }, 200);
+            feedback.innerText = "Incorreto. Tente novamente.";
+            feedback.className = "feedback-error";
+            feedback.style.opacity = 1;
+
+            // Shake effect
+            const group = document.querySelector('.input-group');
+            group.style.transform = 'translateX(5px)';
+            setTimeout(() => group.style.transform = 'translateX(-5px)', 100);
+            setTimeout(() => group.style.transform = 'translateX(0)', 200);
 
             wrongAttempts++;
-
-            // Mostra o botão de dicas após 2 erros
-            if (wrongAttempts >= 2) {
-                // Verifica se já não está visível para evitar re-animação
-                if (hintToggleBtn.style.display !== 'block') {
-                     hintToggleBtn.style.display = 'block';
-                     // Pequena animação de entrada para o botão
-                     hintToggleBtn.style.opacity = 0;
-                     hintToggleBtn.style.transform = 'translateY(20px)';
-                     setTimeout(() => {
-                        hintToggleBtn.style.opacity = 1;
-                        hintToggleBtn.style.transform = 'translateY(0)';
-                     }, 50);
-                }
-            }
+            if (wrongAttempts >= 2) hintBtn.style.display = 'block';
         }
 
-        function showNextHint() {
-            hintTextDiv.style.display = 'block';
-            // Fade out
-            hintTextDiv.style.opacity = 0;
-
+        function showHint() {
+            hintDisp.style.display = 'block';
+            hintDisp.style.opacity = 0;
             setTimeout(() => {
-                // Atualiza o texto
-                hintTextDiv.innerText = `Dica ${currentHintIndex + 1}: ${hintsList[currentHintIndex]}`;
-                // Fade in
-                hintTextDiv.style.opacity = 1;
-
-                // Atualiza o índice para a próxima dica (volta ao zero se chegar no fim)
-                currentHintIndex = (currentHintIndex + 1) % hintsList.length;
-            }, 300); // Tempo para o fade out terminar
+                hintDisp.innerText = hintsList[hintIndex];
+                hintDisp.style.opacity = 1;
+                hintIndex = (hintIndex + 1) % hintsList.length;
+            }, 200);
         }
 
-        // --- Event Listeners ---
+        // --- A SEQUÊNCIA CINEMATOGRÁFICA ---
+        function startFinalSequence() {
+            isSolved = true;
+            
+            // 1. Oculta interface do jogo suavemente
+            ui.style.opacity = 0;
+            hintBtn.style.opacity = 0;
+            
+            // 2. Transforma o fundo (escurece e desfoca)
+            document.body.classList.add('final-state');
 
-        // Clicar no botão confirmar
-        confirmBtn.addEventListener('click', checkAnswer);
+            // 3. Sequência de Textos
+            setTimeout(() => {
+                ui.style.display = 'none'; // Remove do fluxo
+                hintBtn.style.display = 'none';
 
-        // Apertar Enter na caixa de texto
-        inputField.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') checkAnswer();
-        });
+                // Aparece a frase emocional
+                document.getElementById('final-text').classList.add('visible');
+            }, 1000);
 
-        // Clicar no botão de dicas
-        hintToggleBtn.addEventListener('click', showNextHint);
+            // 4. Aparece o Dígito (após ler a frase)
+            setTimeout(() => {
+                document.getElementById('digit-box').classList.add('visible');
+            }, 3500); // 3.5 segundos depois (tempo para ler e sentir a frase)
+        }
+
+        // --- Eventos ---
+        btn.onclick = checkAnswer;
+        input.onkeypress = (e) => { if(e.key === 'Enter') checkAnswer() };
+        hintBtn.onclick = showHint;
 
     </script>
 </body>
