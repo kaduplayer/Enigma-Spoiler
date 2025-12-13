@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Cofre</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: #0e0e0e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* COFRE */
+#safe {
+    width: 90%;
+    max-width: 360px;
+    background: linear-gradient(145deg, #1b1b1b, #111);
+    border-radius: 24px;
+    padding: 30px 20px;
+    box-shadow:
+        inset 0 0 20px rgba(255,255,255,0.05),
+        0 30px 60px rgba(0,0,0,0.6);
+    text-align: center;
+}
+
+/* TÍTULO */
+#safe h1 {
+    color: #eee;
+    font-weight: 300;
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+}
+
+/* DISCOS */
+.dials {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.dial {
+    width: 55px;
+    background: #222;
+    border-radius: 18px;
+    padding: 10px 0;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* BOTÕES */
+.dial button {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.dial button:active {
+    transform: scale(0.9);
+}
+
+/* NÚMERO */
+.number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 8px 0;
+    transition: transform 0.15s ease;
+}
+
+/* BOTÃO ABRIR */
+#try {
+    margin-top: 10px;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: 1px solid #aaa;
+    background: transparent;
+    color: #eee;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#try:active {
+    transform: scale(0.95);
+}
+
+/* MENSAGEM */
+#msg {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #888;
+    min-height: 20px;
+}
+
+/* ANIMAÇÃO DE ERRO */
+.shake {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="safe">
+    <h1>O Cofre</h1>
+
+    <div class="dials">
+        <div class="dial">
+            <button onclick="change(0,1)">▲</button>
+            <div class="number" id="n0">0</div>
+            <button onclick="change(0,-1)">▼</button>
+        </div>
+        <div class="dial">
+            <button onclick="change(1,1)">▲</button>
+            <div class="number" id="n1">0</div>
+            <button onclick="change(1,-1)">▼</button>
+        </div>
+        <div class="dial">
+            <button onclick="change(2,1)">▲</button>
+            <div class="number" id="n2">0</div>
+            <button onclick="change(2,-1)">▼</button>
+        </div>
+        <div class="dial">
+            <button onclick="change(3,1)">▲</button>
+            <div class="number" id="n3">0</div>
+            <button onclick="change(3,-1)">▼</button>
+        </div>
+        <div class="dial">
+            <button onclick="change(4,1)">▲</button>
+            <div class="number" id="n4">0</div>
+            <button onclick="change(4,-1)">▼</button>
+        </div>
+    </div>
+
+    <button id="try" onclick="tryOpen()">Tentar abrir</button>
+    <div id="msg"></div>
+</div>
+
+<script>
+const values = [0,0,0,0,0];
+
+// senha FINAL (exemplo)
+const correct = [6, ?, ?, ?, ?]; // depois você preenche
+
+function change(index, delta) {
+    values[index] = (values[index] + delta + 10) % 10;
+    const el = document.getElementById('n'+index);
+    el.textContent = values[index];
+    el.style.transform = 'scale(1.2)';
+    setTimeout(() => el.style.transform = 'scale(1)', 120);
+}
+
+function tryOpen() {
+    const safe = document.getElementById('safe');
+    const msg = document.getElementById('msg');
+
+    // Mesmo se acertar, NÃO abre (narrativa)
+    safe.classList.add('shake');
+    setTimeout(() => safe.classList.remove('shake'), 400);
+
+    msg.textContent = 'Ainda não.';
+}
+</script>
+
+</body>
+</html>
