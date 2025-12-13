@@ -5,230 +5,265 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>O Cofre</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html, body {
-    width: 100%;
-    height: 100%;
-    font-family: 'Montserrat', sans-serif;
-    background: black;
-    color: white;
-    overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: black;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
 }
 
-/* ---------- PRÓLOGO ---------- */
-#intro {
-    position: fixed;
-    inset: 0;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 40px;
-    z-index: 100;
+/* ===== STORY ===== */
+#story {
+  position: fixed;
+  inset: 0;
+  background: black;
+  color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  font-size: 1.3rem;
+  line-height: 1.6;
+  opacity: 1;
+  transition: opacity 2s ease;
+  z-index: 10;
 }
 
-.intro-text {
-    font-size: 1.4rem;
-    opacity: 0;
-    transition: opacity 1.5s;
-    max-width: 600px;
-    line-height: 1.6;
+/* ===== LUZ ===== */
+#light-layer {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,200,0.15), black 70%);
+  opacity: 0;
+  transition: opacity 4s ease;
+  z-index: 5;
 }
 
-/* ---------- BOTÃO ---------- */
-#start-btn {
-    position: absolute;
-    bottom: 12%;
-    padding: 14px 36px;
-    border: 1px solid white;
-    background: transparent;
-    color: white;
-    border-radius: 30px;
-    font-size: 1.1rem;
-    cursor: pointer;
+/* ===== COFRE ===== */
+#chest-scene {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 3s ease;
+  z-index: 6;
 }
 
-/* ---------- COFRE ---------- */
-#vault {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, #222 0%, #000 70%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 2s ease;
+#chest {
+  width: 220px;
+  cursor: pointer;
+  transition: transform 0.4s ease;
 }
 
-#vault img {
-    width: 220px;
-    margin-bottom: 40px;
+#chest:hover {
+  transform: scale(1.05);
 }
 
-/* ---------- DÍGITOS ---------- */
-.dials {
-    display: flex;
-    gap: 14px;
+#hint {
+  margin-top: 20px;
+  color: #aaa;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  opacity: 0.7;
 }
 
-.dial {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* ===== TELA DA TRAVA ===== */
+#lock-screen {
+  position: fixed;
+  inset: 0;
+  background: #0f0f0f;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
+  z-index: 20;
 }
 
-.dial button {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.4rem;
-    cursor: pointer;
+.lock-box {
+  text-align: center;
 }
 
-.number {
-    font-size: 2.2rem;
-    margin: 8px 0;
+.lock-box h2 {
+  font-weight: 300;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
 }
 
-/* ---------- TEXTO ---------- */
-.hint {
-    margin-top: 30px;
-    font-size: 0.9rem;
-    color: #aaa;
+/* ===== TRAVA VERTICAL ===== */
+.lock {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 
-/* ---------- SOM ---------- */
-audio {
-    display: none;
+.digit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.digit button {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.digit span {
+  font-size: 2.2rem;
+  margin: 8px 0;
+  width: 24px;
+  text-align: center;
+}
+
+/* ===== FEEDBACK ===== */
+#feedback {
+  margin-top: 25px;
+  font-size: 0.9rem;
+  color: #777;
+  min-height: 20px;
 }
 </style>
 </head>
+
 <body>
 
-<!-- SOM -->
-<audio id="ambient" src="ambiente.mp3" loop></audio>
-
-<!-- PRÓLOGO -->
-<div id="intro">
-    <div class="intro-text" id="text"></div>
-    <button id="start-btn">Iniciar</button>
+<!-- STORY -->
+<div id="story">
+  <p>
+    Não foi feito para ser encontrado.<br><br>
+    Ainda assim, alguém deixou isso aqui.<br><br>
+    Cinco números guardam o que foi deixado.
+  </p>
 </div>
+
+<!-- LUZ -->
+<div id="light-layer"></div>
 
 <!-- COFRE -->
-<div id="vault">
-    <img src="chest.png" alt="Cofre">
-
-    <div class="dials" id="dials"></div>
-
-    <div class="hint">Talvez nem tudo se abra de primeira.</div>
+<div id="chest-scene">
+  <img src="cofre.png" id="chest" alt="Cofre">
+  <div id="hint">toque para se aproximar</div>
 </div>
 
+<!-- TELA DA TRAVA -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <h2>Digite a combinação</h2>
+
+    <div class="lock" id="lock">
+      <!-- dígitos -->
+    </div>
+
+    <div id="feedback"></div>
+  </div>
+</div>
+
+<audio id="ambient" src="ambiente.mp3" loop></audio>
+
 <script>
-const textEl = document.getElementById("text");
-const intro = document.getElementById("intro");
-const vault = document.getElementById("vault");
+const story = document.getElementById("story");
+const light = document.getElementById("light-layer");
+const chestScene = document.getElementById("chest-scene");
+const chest = document.getElementById("chest");
+const lockScreen = document.getElementById("lock-screen");
+const lockContainer = document.getElementById("lock");
+const feedback = document.getElementById("feedback");
 const ambient = document.getElementById("ambient");
 
-const lines = [
-    "Algumas coisas não foram feitas para serem abertas de imediato.",
-    "Elas esperam.",
-    "Não por tempo...",
-    "Mas pela pessoa certa.",
-    "Este cofre ficou aqui por muito tempo.",
-    "Guardando fragmentos.",
-    "Começos.",
-    "Lembranças.",
-    "Se você está vendo isso agora...",
-    "Talvez seja porque chegou a hora de tentar."
-];
+const PASSWORD = [6, 2, 1, 4, 9];
+let digits = [0, 0, 0, 0, 0];
 
-let index = 0;
+// iniciar som após interação
+document.body.addEventListener("click", () => {
+  ambient.volume = 0.4;
+  ambient.play();
+}, { once: true });
 
-function showNextLine() {
-    if (index >= lines.length) {
-        setTimeout(() => {
-            intro.style.opacity = 0;
-            setTimeout(() => {
-                intro.style.display = "none";
-                vault.style.opacity = 1;
-                vault.style.pointerEvents = "auto";
-            }, 2000);
-        }, 2000);
-        return;
-    }
+// sequência
+setTimeout(() => story.style.opacity = 0, 6000);
+setTimeout(() => light.style.opacity = 1, 8000);
+setTimeout(() => {
+  chestScene.style.opacity = 1;
+  chestScene.style.pointerEvents = "auto";
+}, 11000);
 
-    textEl.style.opacity = 0;
-    setTimeout(() => {
-        textEl.innerText = lines[index];
-        textEl.style.opacity = 1;
-        index++;
-        setTimeout(showNextLine, 2800);
-    }, 800);
-}
+// clique no cofre
+chest.addEventListener("click", () => {
+  chestScene.style.opacity = 0;
+  chestScene.style.pointerEvents = "none";
 
-document.getElementById("start-btn").onclick = () => {
-    ambient.volume = 0;
-    ambient.play();
-
-    let v = 0;
-    const fade = setInterval(() => {
-        v += 0.02;
-        ambient.volume = Math.min(v, 0.6);
-        if (v >= 0.6) clearInterval(fade);
-    }, 100);
-
-    document.getElementById("start-btn").style.display = "none";
-    showNextLine();
-};
-
-/* ---------- COFRE ---------- */
-const PASSWORD = [6, 1, 4, 2, 9];
-const dials = document.getElementById("dials");
-let values = [0, 0, 0, 0, 0];
-
-values.forEach((_, i) => {
-    const dial = document.createElement("div");
-    dial.className = "dial";
-
-    const up = document.createElement("button");
-    up.innerText = "▲";
-    up.onclick = () => update(i, 1);
-
-    const num = document.createElement("div");
-    num.className = "number";
-    num.innerText = "0";
-
-    const down = document.createElement("button");
-    down.innerText = "▼";
-    down.onclick = () => update(i, -1);
-
-    dial.appendChild(up);
-    dial.appendChild(num);
-    dial.appendChild(down);
-    dials.appendChild(dial);
-
-    dial.num = num;
+  setTimeout(() => {
+    lockScreen.style.opacity = 1;
+    lockScreen.style.pointerEvents = "auto";
+  }, 1200);
 });
 
-function update(i, delta) {
-    values[i] = (values[i] + delta + 10) % 10;
-    dials.children[i].num.innerText = values[i];
+// criar tranca
+function renderLock() {
+  lockContainer.innerHTML = "";
 
-    if (values.every((v, idx) => v === PASSWORD[idx])) {
-        alert("O cofre reagiu...");
-    }
+  digits.forEach((num, i) => {
+    const d = document.createElement("div");
+    d.className = "digit";
+
+    const up = document.createElement("button");
+    up.innerHTML = "▲";
+    up.onclick = () => changeDigit(i, 1);
+
+    const span = document.createElement("span");
+    span.textContent = num;
+
+    const down = document.createElement("button");
+    down.innerHTML = "▼";
+    down.onclick = () => changeDigit(i, -1);
+
+    d.appendChild(up);
+    d.appendChild(span);
+    d.appendChild(down);
+
+    lockContainer.appendChild(d);
+  });
 }
+
+function changeDigit(index, delta) {
+  digits[index] = (digits[index] + delta + 10) % 10;
+  renderLock();
+  checkPassword();
+}
+
+function checkPassword() {
+  const correct = digits.every((n, i) => n === PASSWORD[i]);
+
+  if (correct) {
+    feedback.textContent = "O cofre respondeu.";
+    feedback.style.color = "#9f9";
+    // daqui em diante entra o próximo enigma
+  } else {
+    feedback.textContent = "";
+  }
+}
+
+renderLock();
 </script>
 
 </body>
