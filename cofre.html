@@ -21,7 +21,28 @@ html, body {
   background: black;
   font-family: 'Montserrat', sans-serif;
   overflow: hidden;
-  touch-action: manipulation;
+}
+
+/* ===== START ===== */
+#start-screen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#start-button {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  padding: 18px 50px;
+  letter-spacing: 4px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 /* ===== STORY ===== */
@@ -36,46 +57,16 @@ html, body {
   padding: 40px;
   text-align: center;
   font-size: 1.3rem;
-  line-height: 1.6;
-  opacity: 1;
-  transition: opacity 2s ease;
+  opacity: 0;
   z-index: 10;
 }
 
 .story-line {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1.5s ease, transform 1.5s ease;
-  margin-bottom: 30px;
+  transition: opacity 1.5s ease;
 }
 
-.story-line.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ===== LUZ ===== */
-#light-layer {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,200,0.15), black 70%);
-  opacity: 0;
-  transition: opacity 4s ease;
-  z-index: 5;
-}
-
-/* ===== FADE TO BLACK ===== */
-#fade-black {
-  position: fixed;
-  inset: 0;
-  background: black;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1s ease;
-  z-index: 7;
-}
-
-/* ===== SALA ESCURA ===== */
+/* ===== SALA ===== */
 #dark-room {
   position: fixed;
   inset: 0;
@@ -86,224 +77,66 @@ html, body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 2s ease;
-  z-index: 8;
 }
 
-/* ===== LUZ DA SALA ===== */
 #room-light {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 240, 200, 0.12) 0%,
-    rgba(255, 220, 150, 0.08) 20%,
-    rgba(80, 60, 30, 0.03) 40%,
-    transparent 70%
-  );
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,240,200,0.15), transparent 70%);
   opacity: 0;
-  transition: opacity 3s ease-in-out;
-  z-index: 1;
+  transition: opacity 3s ease;
 }
 
 /* ===== COFRE CSS ===== */
 #css-chest-container {
   position: relative;
-  width: 300px;
-  height: 350px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 2s ease;
-  z-index: 2;
-}
-
-/* Estrutura principal do cofre */
-.chest-body {
-  position: relative;
   width: 220px;
   height: 280px;
-  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
-  border-radius: 12px;
-  box-shadow: 
-    inset 0 0 30px rgba(0, 0, 0, 0.8),
-    0 10px 40px rgba(0, 0, 0, 0.7),
-    0 0 0 2px #222;
-  overflow: hidden;
+  opacity: 0;
+  transition: opacity 2s ease, transform 1.2s ease;
 }
 
-/* Porta do cofre */
+.chest-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #3a3a3a, #222);
+  border-radius: 14px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,.8);
+  position: relative;
+}
+
 .chest-door {
   position: absolute;
-  top: 20px;
-  left: 10px;
-  width: 200px;
-  height: 240px;
+  inset: 15px;
   background: linear-gradient(135deg, #333, #222);
-  border-radius: 8px;
-  box-shadow: 
-    inset 0 0 20px rgba(0, 0, 0, 0.9),
-    0 0 0 2px #444;
+  border-radius: 10px;
 }
 
-/* Maçaneta/trava */
 .chest-handle {
   position: absolute;
   top: 50%;
   right: 25px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: radial-gradient(circle, #555, #333);
   border-radius: 50%;
   transform: translateY(-50%);
-  box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.8),
-    0 2px 6px rgba(0, 0, 0, 0.6);
-  border: 2px solid #444;
 }
 
-/* Linhas decorativas */
-.chest-lines {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 160px;
-  height: 200px;
-}
-
-.vertical-line {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, #555, transparent);
-  border-radius: 2px;
-}
-
-.horizontal-line {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(to right, transparent, #555, transparent);
-  border-radius: 2px;
-}
-
-/* Parafusos decorativos */
-.screw {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: radial-gradient(circle, #666, #444);
-  border-radius: 50%;
-  box-shadow: 
-    inset 0 1px 2px rgba(255, 255, 255, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.screw-1 { top: 15px; left: 15px; }
-.screw-2 { top: 15px; right: 15px; }
-.screw-3 { bottom: 15px; left: 15px; }
-.screw-4 { bottom: 15px; right: 15px; }
-
-/* Sombra do cofre */
-.chest-shadow {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 240px;
-  height: 40px;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 70%);
-  border-radius: 50%;
-  z-index: -1;
-}
-
-/* ===== BOTÃO DE APROXIMAÇÃO ===== */
+/* ===== BOTÃO ===== */
 #approach-button {
   position: absolute;
   bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.8);
-  padding: 12px 30px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 12px 36px;
   letter-spacing: 3px;
-  cursor: pointer;
-  opacity: 0;
-  transition: all 0.4s ease;
-  backdrop-filter: blur(5px);
   border-radius: 30px;
-  z-index: 3;
-  -webkit-appearance: none;
-  touch-action: manipulation;
-  user-select: none;
-  min-height: 44px;
-  min-width: 44px;
-}
-
-#approach-button:hover,
-#approach-button:active {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateX(-50%) scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-
-/* Animação de pulso sutil */
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
-
-.pulse {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-/* ===== COFRE (antigo - mantido) ===== */
-#chest-scene {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 3s ease;
-  z-index: 6;
 }
 
-#chest {
-  width: 220px;
-  cursor: pointer;
-  transition: transform 0.4s ease;
-  touch-action: manipulation;
-}
-
-#chest:hover {
-  transform: scale(1.05);
-}
-
-#hint {
-  margin-top: 20px;
-  color: #aaa;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
-  opacity: 0.7;
-}
-
-/* ===== TELA DA TRAVA ===== */
+/* ===== LOCK ===== */
 #lock-screen {
   position: fixed;
   inset: 0;
@@ -315,6 +148,167 @@ html, body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 1.5s ease;
+}
+
+.lock {
+  display: flex;
+  gap: 12px;
+}
+
+.digit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.digit button {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.4rem;
+}
+
+.digit span {
+  font-size: 2rem;
+  margin: 6px 0;
+}
+
+/* ===== ZOOM ===== */
+.zoom-in {
+  transform: scale(1.4);
+}
+</style>
+</head>
+
+<body>
+
+<div id="start-screen">
+  <button id="start-button">INICIAR</button>
+</div>
+
+<div id="story">
+  <div class="story-line" id="line"> </div>
+</div>
+
+<div id="dark-room">
+  <div id="room-light"></div>
+
+  <div id="css-chest-container">
+    <div class="chest-body">
+      <div class="chest-door">
+        <div class="chest-handle"></div>
+      </div>
+    </div>
+  </div>
+
+  <button id="approach-button">APROXIMAR-SE</button>
+</div>
+
+<div id="lock-screen">
+  <div>
+    <h3 style="text-align:center;margin-bottom:20px;">Digite a combinação</h3>
+    <div class="lock" id="lock"></div>
+  </div>
+</div>
+
+<audio id="ambient" src="ambiente.mp3" loop></audio>
+
+<script>
+const startBtn = document.getElementById("start-button");
+const startScreen = document.getElementById("start-screen");
+const story = document.getElementById("story");
+const line = document.getElementById("line");
+const darkRoom = document.getElementById("dark-room");
+const roomLight = document.getElementById("room-light");
+const chest = document.getElementById("css-chest-container");
+const approach = document.getElementById("approach-button");
+const lockScreen = document.getElementById("lock-screen");
+const lock = document.getElementById("lock");
+const ambient = document.getElementById("ambient");
+
+const text = [
+  "Não foi feito para ser encontrado.",
+  "Ainda assim, alguém deixou isso aqui.",
+  "Cinco números guardam o que foi deixado."
+];
+
+const PASSWORD = [6,2,1,4,9];
+let digits = [0,0,0,0,0];
+
+startBtn.onclick = () => {
+  startScreen.style.display = "none";
+  ambient.volume = 0.4;
+  ambient.play();
+  startStory();
+};
+
+function startStory(){
+  story.style.opacity = 1;
+  let i = 0;
+
+  function next(){
+    if(i>0) line.style.opacity = 0;
+    if(i < text.length){
+      setTimeout(()=>{
+        line.textContent = text[i];
+        line.style.opacity = 1;
+        i++;
+        setTimeout(next, 3000);
+      }, 1000);
+    } else {
+      setTimeout(()=>{
+        story.style.opacity = 0;
+        startRoom();
+      }, 2000);
+    }
+  }
+  next();
+}
+
+function startRoom(){
+  darkRoom.style.opacity = 1;
+  darkRoom.style.pointerEvents = "auto";
+  setTimeout(()=>roomLight.style.opacity=1,500);
+  setTimeout(()=>chest.style.opacity=1,2000);
+  setTimeout(()=>approach.style.opacity=1,3500);
+}
+
+approach.onclick = ()=>{
+  chest.classList.add("zoom-in");
+  setTimeout(()=>{
+    darkRoom.style.opacity = 0;
+    lockScreen.style.opacity = 1;
+    lockScreen.style.pointerEvents = "auto";
+    renderLock();
+  },1200);
+};
+
+function renderLock(){
+  lock.innerHTML="";
+  digits.forEach((n,i)=>{
+    const d=document.createElement("div");
+    d.className="digit";
+    const up=document.createElement("button");
+    up.textContent="▲";
+    up.onclick=()=>change(i,1);
+    const span=document.createElement("span");
+    span.textContent=n;
+    const down=document.createElement("button");
+    down.textContent="▼";
+    down.onclick=()=>change(i,-1);
+    d.append(up,span,down);
+    lock.appendChild(d);
+  });
+}
+
+function change(i,delta){
+  digits[i]=(digits[i]+delta+10)%10;
+  renderLock();
+}
+</script>
+
+</body>
+</html> opacity 1.5s ease;
   z-index: 20;
 }
 
