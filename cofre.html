@@ -70,11 +70,7 @@ html, body {
     color: #aaa;
     font-size: 1.2rem;
     cursor: pointer;
-    padding: 5px;
-}
-
-.dial button:active {
-    transform: scale(0.9);
+    padding: 6px;
 }
 
 /* NÚMERO */
@@ -98,10 +94,6 @@ html, body {
     cursor: pointer;
 }
 
-#try:active {
-    transform: scale(0.95);
-}
-
 /* MENSAGEM */
 #msg {
     margin-top: 20px;
@@ -110,7 +102,7 @@ html, body {
     min-height: 20px;
 }
 
-/* ANIMAÇÃO DE ERRO */
+/* ANIMAÇÃO */
 .shake {
     animation: shake 0.4s;
 }
@@ -132,48 +124,63 @@ html, body {
 
     <div class="dials">
         <div class="dial">
-            <button onclick="change(0,1)">▲</button>
+            <button class="up" data-i="0">▲</button>
             <div class="number" id="n0">0</div>
-            <button onclick="change(0,-1)">▼</button>
+            <button class="down" data-i="0">▼</button>
         </div>
         <div class="dial">
-            <button onclick="change(1,1)">▲</button>
+            <button class="up" data-i="1">▲</button>
             <div class="number" id="n1">0</div>
-            <button onclick="change(1,-1)">▼</button>
+            <button class="down" data-i="1">▼</button>
         </div>
         <div class="dial">
-            <button onclick="change(2,1)">▲</button>
+            <button class="up" data-i="2">▲</button>
             <div class="number" id="n2">0</div>
-            <button onclick="change(2,-1)">▼</button>
+            <button class="down" data-i="2">▼</button>
         </div>
         <div class="dial">
-            <button onclick="change(3,1)">▲</button>
+            <button class="up" data-i="3">▲</button>
             <div class="number" id="n3">0</div>
-            <button onclick="change(3,-1)">▼</button>
+            <button class="down" data-i="3">▼</button>
         </div>
         <div class="dial">
-            <button onclick="change(4,1)">▲</button>
+            <button class="up" data-i="4">▲</button>
             <div class="number" id="n4">0</div>
-            <button onclick="change(4,-1)">▼</button>
+            <button class="down" data-i="4">▼</button>
         </div>
     </div>
 
-    <button id="try" onclick="tryOpen()">Tentar abrir</button>
+    <button id="try">Tentar abrir</button>
     <div id="msg"></div>
 </div>
 
 <script>
 const values = [0, 0, 0, 0, 0];
 
-function change(index, delta) {
-    values[index] = (values[index] + delta + 10) % 10;
+function update(index) {
     const el = document.getElementById('n' + index);
     el.textContent = values[index];
     el.style.transform = 'scale(1.2)';
     setTimeout(() => el.style.transform = 'scale(1)', 120);
 }
 
-function tryOpen() {
+document.querySelectorAll('.up').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const i = btn.dataset.i;
+        values[i] = (values[i] + 1) % 10;
+        update(i);
+    });
+});
+
+document.querySelectorAll('.down').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const i = btn.dataset.i;
+        values[i] = (values[i] + 9) % 10;
+        update(i);
+    });
+});
+
+document.getElementById('try').addEventListener('click', () => {
     const safe = document.getElementById('safe');
     const msg = document.getElementById('msg');
 
@@ -181,14 +188,7 @@ function tryOpen() {
     setTimeout(() => safe.classList.remove('shake'), 400);
 
     msg.textContent = 'Ainda não.';
-}
-</script>
-
-</body>
-</html>    setTimeout(() => safe.classList.remove('shake'), 400);
-
-    msg.textContent = 'Ainda não.';
-}
+});
 </script>
 
 </body>
