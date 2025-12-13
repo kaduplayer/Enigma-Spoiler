@@ -8,185 +8,230 @@
     <style>
         /* --- GERAL --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { height: 100%; font-family: 'Montserrat', sans-serif; overflow: hidden; background-color: #000; }
+        body, html {
+            height: 100%; width: 100%; overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000; color: white;
+        }
 
-        /* --- IMAGENS DE FUNDO --- */
-        .bg-image {
+        /* --- 1. TELA DE INÍCIO (Para liberar o áudio) --- */
+        #start-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            transition: opacity 1.5s ease; opacity: 0; z-index: 0;
+            background: #000; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .start-btn {
+            padding: 15px 40px; border: 1px solid white; background: transparent;
+            color: white; font-size: 1.2rem; cursor: pointer; border-radius: 30px;
+            transition: all 0.3s;
+        }
+        .start-btn:hover { background: white; color: black; }
+
+        /* --- 2. VÍDEO --- */
+        #video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; background: black; transition: opacity 2s ease;
+            display: none; /* Começa oculto até clicar em iniciar */
+        }
+        video {
+            width: 100%; height: 100%; object-fit: contain; /* Ajusta o vídeo sem cortar */
         }
 
-        /* Definição das imagens */
-        #bg-desenho { background-image: url('desenho.jpg'); } 
-        #bg-menu { background-image: url('menu.jpg'); } 
-
-        /* --- TEXTOS E UI --- */
-        .ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 20; pointer-events: none;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* --- 3. O DESENHO E O JOGO --- */
+        #game-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            /* Fundo branco pois o desenho tem fundo branco */
+            background-color: #fff; 
+            background-image: url('desenho.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain; /* Mostra o desenho inteiro */
+            z-index: 10; opacity: 0; transition: opacity 2s ease;
         }
 
-        .narrative-text {
-            color: white; font-size: 1.5rem; text-align: center; max-width: 80%;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.9); opacity: 0; transition: opacity 1s;
-            background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px;
-        }
-
-        /* --- ZONAS DE CLIQUE (LETRAS) --- */
-        .click-zone {
+        /* A "Máscara" do Raio (Ajuste a posição aqui se precisar) */
+        #lightning-bolt {
             position: absolute;
-            z-index: 30;
-            cursor: pointer;
-            
-            /* --- MODO DE AJUSTE (MUDE PARA "transparent" DEPOIS) --- */
-            border: 2px solid red; 
-            background-color: rgba(255, 0, 0, 0.2); 
-            /* ------------------------------------------------------- */
+            /* Posições baseadas no seu desenho */
+            top: 60%; 
+            left: 35%;
+            width: 10%; 
+            height: 15%;
+            border-radius: 50%;
+            pointer-events: none;
+            /* Efeito inicial neutro */
+            mix-blend-mode: multiply; 
+            transition: all 1s ease;
         }
 
-        /* Posições INICIAIS das letras (Você vai precisar ajustar esses % baseados no seu cardápio) */
-        /* S - Sugestão: No 'S' de LIDOS (título) ou COOKIES */
-        #zone-s { top: 10%; right: 10%; width: 10%; height: 8%; } 
-        
-        /* E - Sugestão: No 'E' de CAFÉ */
-        #zone-e { top: 25%; left: 15%; width: 10%; height: 5%; }
-
-        /* N - Sugestão: No 'N' de MENTA (lá embaixo) ou AMERICANO */
-        #zone-n { top: 65%; right: 15%; width: 15%; height: 5%; }
-
-        /* A - Sugestão: No 'A' de AVELÃ ou AMERICANO */
-        #zone-a { top: 30%; left: 15%; width: 15%; height: 5%; }
-
-        /* I - Sugestão: No 'I' de LIDOS ou BISCOITO */
-        #zone-i { top: 10%; right: 30%; width: 5%; height: 8%; }
-
-        /* Feedback visual ao clicar (brilho) */
-        .click-zone.clicked {
-            background-color: rgba(255, 255, 255, 0.5) !important;
-            border-color: white !important;
-            transition: background-color 0.2s;
+        /* Animação do Raio quando acerta */
+        #lightning-bolt.active {
+            box-shadow: 0 0 50px 20px rgba(255, 215, 0, 0.8); /* Brilho Dourado */
+            background-color: rgba(255, 215, 0, 0.3);
+            transform: scale(1.5);
+            animation: electricPulse 0.5s infinite alternate;
+        }
+        @keyframes electricPulse {
+            from { opacity: 0.6; transform: scale(1.4); }
+            to { opacity: 1; transform: scale(1.6); }
         }
 
-        /* --- TELA FINAL (REVELAÇÃO) --- */
-        #final-screen {
+        /* Interface da Pergunta */
+        .ui-layer {
+            position: absolute; bottom: 10%; left: 0; width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            z-index: 20;
+        }
+
+        h2.question {
+            color: #333; /* Texto escuro pois o fundo é branco */
+            margin-bottom: 20px; font-weight: 700; font-size: 1.5rem;
+            text-align: center;
+        }
+
+        input {
+            padding: 10px 20px; border: 2px solid #333; border-radius: 30px;
+            background: transparent; color: #333; font-size: 1.1rem;
+            text-align: center; outline: none; font-family: 'Montserrat', sans-serif;
+            width: 80%; max-width: 300px; transition: transform 0.2s;
+        }
+
+        /* --- 4. TELA FINAL --- */
+        #final-sequence {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 50; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; opacity: 0; pointer-events: none;
-            transition: opacity 2s;
+            background: black; z-index: 80;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 2s ease;
         }
-        .the-number {
-            font-size: 8rem; color: #fff; font-weight: 900;
-            text-shadow: 0 0 30px #fff; animation: pulse 2s infinite;
+
+        .final-text {
+            color: #fff; font-size: 1.5rem; margin-bottom: 40px; opacity: 0;
+            transition: opacity 2s ease; font-weight: 300; text-align: center;
         }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        .digit-reveal {
+            display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 2s ease;
+        }
+        .unlock-label { font-size: 0.8rem; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 10px; }
+        .number-6 {
+            font-size: 9rem; font-weight: 100; color: #fff;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsividade */
+        @media (min-aspect-ratio: 16/9) {
+            /* Ajuste para PC se necessário */
+            #lightning-bolt { top: 65%; left: 42%; width: 5%; height: 20%; }
+        }
 
     </style>
 </head>
 <body>
 
-    <div id="bg-desenho" class="bg-image"></div>
-    <div id="bg-menu" class="bg-image"></div>
-
-    <div class="ui-layer" id="ui-layer">
-        <p class="narrative-text" id="main-text">Antes das séries, antes de tudo isso...</p>
+    <div id="start-overlay">
+        <button class="start-btn" onclick="startExperience()">Iniciar Memória</button>
     </div>
 
-    <div id="game-area" style="display: none;">
-        <div class="click-zone" id="zone-s" onclick="registerClick('s', this)"></div>
-        <div class="click-zone" id="zone-e" onclick="registerClick('e', this)"></div>
-        <div class="click-zone" id="zone-n" onclick="registerClick('n', this)"></div>
-        <div class="click-zone" id="zone-a" onclick="registerClick('a', this)"></div>
-        <div class="click-zone" id="zone-i" onclick="registerClick('i', this)"></div>
+    <div id="video-container">
+        <video id="intro-video" playsinline>
+            <source src="video_intro.mp4" type="video/mp4">
+        </video>
     </div>
 
-    <div id="final-screen">
-        <p style="color: #aaa; letter-spacing: 4px; text-transform: uppercase;">Dígito Desbloqueado</p>
-        <div class="the-number">6</div>
+    <div id="game-container">
+        <div id="lightning-bolt"></div>
+
+        <div class="ui-layer" id="ui-box">
+            <h2 class="question">Qual foi o começo?</h2>
+            <input type="text" id="answer-input" placeholder="Digite..." autocomplete="off">
+        </div>
+    </div>
+
+    <div id="final-sequence">
+        <p class="final-text" id="end-phrase">Foi ali que tudo começou.</p>
+        <div class="digit-reveal" id="digit-box">
+            <span class="unlock-label">Dígito Desbloqueado</span>
+            <span class="number-6">6</span>
+        </div>
     </div>
 
     <script>
-        const textElement = document.getElementById('main-text');
-        const bgDesenho = document.getElementById('bg-desenho');
-        const bgMenu = document.getElementById('bg-menu');
-        const gameArea = document.getElementById('game-area');
-
-        // Sequência correta: S E N A I
-        const correctSequence = ['s', 'e', 'n', 'a', 'i'];
-        let userSequence = [];
-
-        // --- CENA 1: O DESENHO ---
-        window.onload = function() {
-            bgDesenho.style.opacity = 1; // Mostra desenho
-            setTimeout(() => { textElement.style.opacity = 1; }, 500); // Mostra texto 1
-
-            // Troca para Texto 2 após 3 segundos
-            setTimeout(() => {
-                textElement.style.opacity = 0;
-                setTimeout(() => {
-                    textElement.innerText = "Teve um começo.";
-                    textElement.style.opacity = 1;
-                }, 1000);
-            }, 3500);
-
-            // Troca para o Menu após 7 segundos
-            setTimeout(() => {
-                startMenuPhase();
-            }, 7000);
-        };
-
-        // --- CENA 2: O CARDÁPIO ---
-        function startMenuPhase() {
-            // Fade out desenho, Fade in Menu
-            bgDesenho.style.opacity = 0;
-            textElement.style.opacity = 0;
-            
-            setTimeout(() => {
-                bgMenu.style.opacity = 1; // Mostra Menu
-                gameArea.style.display = 'block'; // Ativa os botões
-                
-                // Texto de instrução
-                textElement.innerText = "Soletre o nome do lugar onde nos conhecemos.";
-                textElement.style.opacity = 1;
-                textElement.style.marginTop = "-80%"; // Sobe o texto para não tapar o menu
-            }, 1000);
+        const videoContainer = document.getElementById('video-container');
+        const video = document.getElementById('intro-video');
+        const gameContainer = document.getElementById('game-container');
+        const input = document.getElementById('answer-input');
+        const bolt = document.getElementById('lightning-bolt');
+        
+        // --- 1. Iniciar Experiência ---
+        function startExperience() {
+            document.getElementById('start-overlay').style.display = 'none';
+            videoContainer.style.display = 'block';
+            video.play();
         }
 
-        // --- LÓGICA DO JOGO ---
-        function registerClick(letter, element) {
-            // Efeito visual de clique
-            element.classList.add('clicked');
-            setTimeout(() => element.classList.remove('clicked'), 200);
+        // --- 2. Quando o vídeo acaba ---
+        video.onended = function() {
+            videoContainer.style.opacity = 0; // Fade out vídeo
+            setTimeout(() => {
+                videoContainer.style.display = 'none';
+                gameContainer.style.opacity = 1; // Fade in Desenho
+            }, 1500);
+        };
 
-            // Verifica a lógica
-            const expectedLetter = correctSequence[userSequence.length];
+        // --- 3. Lógica do Jogo ---
+        input.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') checkAnswer();
+        });
 
-            if (letter === expectedLetter) {
-                userSequence.push(letter);
-                
-                // Feedback visual sutil (Texto pisca verde ou algo assim, opcional)
-                console.log("Acertou: " + letter);
+        function checkAnswer() {
+            const val = input.value.trim().toLowerCase();
 
-                if (userSequence.length === correctSequence.length) {
-                    finishGame();
-                }
+            if (val === 'senai') {
+                handleSuccess();
             } else {
-                // Errou a sequência? Reseta
-                userSequence = [];
-                // Treme a tela ou dá feedback de erro (opcional)
-                const ui = document.getElementById('ui-layer');
-                ui.style.transform = "translateX(10px)";
-                setTimeout(() => ui.style.transform = "translateX(0)", 100);
-                console.log("Errou, resetando.");
+                handleError();
             }
         }
 
-        function finishGame() {
+        function handleError() {
+            // Tremor leve (Shake)
+            input.style.transform = "translateX(5px)";
+            setTimeout(() => input.style.transform = "translateX(-5px)", 50);
+            setTimeout(() => input.style.transform = "translateX(5px)", 100);
+            setTimeout(() => input.style.transform = "translateX(0)", 150);
+            
+            // Opcional: Limpar input
+            // input.value = '';
+        }
+
+        function handleSuccess() {
+            // 1. Remove interface
+            document.getElementById('ui-box').style.opacity = 0;
+            
+            // 2. Anima o RAIO
+            bolt.classList.add('active');
+
+            // 3. Após 2 segundos admirando o raio, vai para o final
             setTimeout(() => {
-                document.getElementById('final-screen').style.opacity = 1;
-                document.getElementById('final-screen').style.pointerEvents = "auto";
-            }, 500);
+                goToFinal();
+            }, 2500);
+        }
+
+        function goToFinal() {
+            const finalScreen = document.getElementById('final-sequence');
+            
+            // Escurece tudo
+            finalScreen.style.opacity = 1;
+            
+            // Texto surge
+            setTimeout(() => {
+                document.getElementById('end-phrase').style.opacity = 1;
+            }, 1000);
+
+            // Número surge
+            setTimeout(() => {
+                document.getElementById('digit-box').style.opacity = 1;
+            }, 4000);
         }
     </script>
 </body>
