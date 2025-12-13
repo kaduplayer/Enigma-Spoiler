@@ -1,9 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-<title>New File</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Enigma de Conexão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET E GERAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body, html {
+            height: 100%; 
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; 
+            /* Removi a cor de fundo preta daqui para não cobrir a imagem */
+        }
+
+        /* --- FUNDO (A Imagem) --- */
+        #background-container {
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            /* Aqui está o nome correto da sua imagem */
+            background: url('image_10.png') no-repeat center center;
+            background-size: cover;
+            /* Z-index 0 garante que ela fique na base, mas visível */
+            z-index: 0; 
+            transition: all 2s ease-in-out; 
+        }
+        
+        /* Estado final do fundo: Escuro e desfocado (quando acerta) */
+        body.final-state #background-container {
+            filter: brightness(0.2) blur(4px) grayscale(30%);
+            transform: scale(1.05); 
+        }
+
+        /* --- CONTEÚDO PRINCIPAL (PERGUNTA) --- */
+        .main-content {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100vh; color: white; text-align: center; padding: 25px;
+            /* Z-index alto para ficar na frente da imagem */
+            position: relative; z-index: 20; 
+            transition: opacity 1s ease;
+        }
+
+        h1.title {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 700; margin-bottom: 30px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        /* --- INPUT E BOTÃO --- */
+        .input-group {
+            display: flex; gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px; border-radius: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            width: 100%; max-width: 480px;
+            transition: transform 0.3s;
+        }
+
+        input[type="text"] {
+            flex-grow: 1; padding: 12px 20px; border: none; border-radius: 30px;
+            outline: none; font-size: 1rem; font-family: 'Montserrat', sans-serif;
+            background: rgba(255, 255, 255, 0.95); color: #333;
+        }
+
+        button#confirm-btn {
+            padding: 12px 28px; border: none; border-radius: 30px;
+            background: linear-gradient(135deg, #8A2BE2, #4B0082);
+            color: white; font-size: 1rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+            transition: all 0.3s ease;
+        }
+        button#confirm-btn:active { transform: scale(0.95); }
+
+        /* --- FEEDBACK E DICAS --- */
+        #feedback-message {
+            margin-top: 25px; font-size: 1.1rem; min-height: 1.5em;
+            opacity: 0; transition: opacity 0.5s ease;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .feedback-error { color: #FFD700; font-weight: 600; }
+
+        #hint-toggle-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            padding: 10px 20px; background: rgba(0, 0, 0, 0.6);
+            color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px; cursor: pointer; font-size: 0.9rem;
+            display: none; backdrop-filter: blur(4px); z-index: 30;
+            transition: all 0.3s;
+        }
+        #hint-display {
+            margin-top: 20px; font-style: italic; color: #ddd;
+            background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 15px;
+            opacity: 0; transition: opacity 0.5s; display: none;
+        }
+
+        /* --- SEQUÊNCIA FINAL (CINEMATOGRÁFICA) --- */
+        #final-sequence {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 50; pointer-events: none; /* Não clicável */
+            text-align: center;
+        }
+
+        .narrative-text {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            font-weight: 300; color: #fff;
+            opacity: 0; transform: translateY(20px);
+            transition: all 1.5s ease-out;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            max-width: 80%; line-height: 1.5;
+        }
+
+        .digit-container {
+            opacity: 0; transition: opacity 1.5s ease;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .unlock-label {
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 4px;
+            color: #aaa; margin-bottom: 10px; font-weight: 400;
+        }
+
+        .the-number {
+            font-size: 8rem; font-weight: 100; color: #fff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            transform: scale(0.9);
+            /* Animação de pulsação suave (respiração) */
+            animation: breathe 4s infinite ease-in-out;
+        }
+
+        /* Classes de ativação */
+        .visible { opacity: 1 !important; transform: translateY(0) !important; }
+        
+        @keyframes breathe {
+            0%, 100% { opacity: 0.8; transform: scale(0.95); text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            50% { opacity: 1; transform: scale(1); text-shadow: 0 0 40px rgba(255,255,255,1); }
+        }
+
+        @media (max-width: 600px) {
+            .input-group { flex-direction: column; background: rgba(0,0,0,0.5); padding: 15px; }
+            input[type="text"] { width: 100%; text-align: center; margin-bottom: 10px; }
+            button#confirm-btn { width: 100%; }
+            .the-number { font-size: 6rem; }
+        }
+    </style>
 </head>
 <body>
-<h1>Hello World</h1>
+
+    <div id="background-container"></div>
+
+    <div class="main-content" id="quiz-ui">
+        <h1 class="title">O que conecta tudo isso?</h1>
+
+        <div class="input-group">
+            <input type="text" id="answer-input" placeholder="Sua resposta..." autocomplete="off">
+            <button id="confirm-btn">Confirmar</button>
+        </div>
+
+        <div id="feedback-message"></div>
+        <div id="hint-display"></div>
+    </div>
+
+    <button id="hint-toggle-btn">Quer dicas?</button>
+
+    <div id="final-sequence">
+        <p class="narrative-text" id="final-text">Foi essa frase que iniciou tudo isso.</p>
+        
+        <div class="digit-container" id="digit-box">
+            <span class="unlock-label">Dígito desbloqueado</span>
+            <span class="the-number">1</span>
+        </div>
+    </div>
+
+    <script>
+        // --- Configurações ---
+        const validAnswers = [
+            "bora assistir juntos?", "bora assistir juntos",
+            "bora ler juntos?", "bora ler juntos"
+        ];
+
+        const hintsList = [
+            "Não é algo específico que você vê aqui.",
+            "Tudo isso começou com uma pergunta.",
+            "Bora…"
+        ];
+
+        let wrongAttempts = 0;
+        let hintIndex = 0;
+        let isSolved = false;
+
+        // --- Elementos ---
+        const ui = document.getElementById('quiz-ui');
+        const input = document.getElementById('answer-input');
+        const btn = document.getElementById('confirm-btn');
+        const feedback = document.getElementById('feedback-message');
+        const hintBtn = document.getElementById('hint-toggle-btn');
+        const hintDisp = document.getElementById('hint-display');
+
+        // --- Lógica Principal ---
+        function checkAnswer() {
+            if (isSolved) return;
+            let val = input.value.trim().toLowerCase().replace(/[.!]+$/, '');
+
+            if (validAnswers.includes(val)) {
+                startFinalSequence();
+            } else {
+                handleError();
+            }
+        }
+
+        function handleError() {
+            feedback.innerText = "Incorreto. Tente novamente.";
+            feedback.className = "feedback-error";
+            feedback.style.opacity = 1;
+
+            // Shake effect
+            const group = document.querySelector('.input-group');
+            group.style.transform = 'translateX(5px)';
+            setTimeout(() => group.style.transform = 'translateX(-5px)', 100);
+            setTimeout(() => group.style.transform = 'translateX(0)', 200);
+
+            wrongAttempts++;
+            if (wrongAttempts >= 2) hintBtn.style.display = 'block';
+        }
+
+        function showHint() {
+            hintDisp.style.display = 'block';
+            hintDisp.style.opacity = 0;
+            setTimeout(() => {
+                hintDisp.innerText = hintsList[hintIndex];
+                hintDisp.style.opacity = 1;
+                hintIndex = (hintIndex + 1) % hintsList.length;
+            }, 200);
+        }
+
+        // --- A SEQUÊNCIA CINEMATOGRÁFICA ---
+        function startFinalSequence() {
+            isSolved = true;
+            
+            // 1. Oculta interface do jogo suavemente
+            ui.style.opacity = 0;
+            hintBtn.style.opacity = 0;
+            
+            // 2. Transforma o fundo (escurece e desfoca)
+            document.body.classList.add('final-state');
+
+            // 3. Sequência de Textos
+            setTimeout(() => {
+                ui.style.display = 'none'; // Remove do fluxo
+                hintBtn.style.display = 'none';
+
+                // Aparece a frase emocional
+                document.getElementById('final-text').classList.add('visible');
+            }, 1000);
+
+            // 4. Aparece o Dígito (após ler a frase)
+            setTimeout(() => {
+                document.getElementById('digit-box').classList.add('visible');
+            }, 3500); // 3.5 segundos depois (tempo para ler e sentir a frase)
+        }
+
+        // --- Eventos ---
+        btn.onclick = checkAnswer;
+        input.onkeypress = (e) => { if(e.key === 'Enter') checkAnswer() };
+        hintBtn.onclick = showHint;
+
+    </script>
 </body>
 </html>
