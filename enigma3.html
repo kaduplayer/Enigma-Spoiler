@@ -1,238 +1,290 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>O Começo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>O Começo</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
 
-    <style>
-        /* --- RESET --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Montserrat', sans-serif;
-            background: black;
-        }
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: black;
+}
 
-        /* --- 1. TELA DE INÍCIO --- */
-        #start-overlay {
-            position: fixed;
-            inset: 0;
-            background: black;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s;
-        }
+/* TELA INICIAL */
+#start-overlay {
+    position: fixed;
+    inset: 0;
+    background: black;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s;
+}
 
-        .start-btn {
-            padding: 15px 40px;
-            border: 1px solid white;
-            background: transparent;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border-radius: 30px;
-        }
+.start-btn {
+    padding: 15px 40px;
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 30px;
+}
 
-        #status-msg {
-            margin-top: 20px;
-            color: #888;
-            font-size: 0.9rem;
-            min-height: 20px;
-        }
+#status-msg {
+    margin-top: 20px;
+    color: #888;
+    font-size: 0.9rem;
+}
 
-        /* --- 2. VÍDEO --- */
-        #video-container {
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-            background: black;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s ease;
-        }
+/* VÍDEO */
+#video-container {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: black;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
 
-        /* --- 3. JOGO --- */
-        #game-container {
-            position: fixed;
-            inset: 0;
-            background-color: white;
-            background-image: url('desenho.jpg');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 2s ease;
-        }
-                /* --- CÍRCULO DO RAIO --- */
-                #lightning-bolt {
+/* JOGO */
+#game-container {
+    position: fixed;
+    inset: 0;
+    background: white url('desenho.jpg') no-repeat center;
+    background-size: contain;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+/* CÍRCULO DO RAIO */
+#lightning-bolt {
     position: absolute;
+
+    /* 🔧 AJUSTE A POSIÇÃO AQUI */
     top: 48%;
     left: 35%;
+
     width: 15%;
-    height: 15%;
+    aspect-ratio: 1 / 1;
+
     border-radius: 50%;
     pointer-events: none;
 
-    /* Invisível até acertar */
-    opacity: 1;
+    /* CENTRALIZA PELO CENTRO */
+    transform: translate(-50%, -50%);
 
-    transition: all 0.6s ease;
+    opacity: 0;
+    transition: opacity 0.6s ease;
 }
-        #lightning-bolt.active {
+
+#lightning-bolt.active {
     opacity: 1;
+    background: rgba(255, 215, 0, 0.25);
     box-shadow:
         0 0 20px rgba(255, 215, 0, 0.6),
         0 0 40px rgba(255, 215, 0, 0.6),
         0 0 80px rgba(255, 215, 0, 0.8);
-    background: rgba(255, 215, 0, 0.25);
     animation: pulse 0.6s infinite alternate;
 }
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.15); }
-        }
 
-        /* --- UI --- */
-        .ui-layer {
-            position: absolute;
-            bottom: 8%;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 20;
-            pointer-events: auto;
-        }
+/* ANIMAÇÃO CORRIGIDA */
+@keyframes pulse {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1.15);
+    }
+}
 
-        h2.question {
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 700;
-            font-size: 1.5rem;
-            text-align: center;
-        }
+/* UI */
+.ui-layer {
+    position: absolute;
+    bottom: 8%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 20;
+}
 
-        input {
-            width: 80%;
-            max-width: 300px;
-            padding: 12px 20px;
-            border: 2px solid #333;
-            border-radius: 30px;
-            background-color: rgba(255,255,255,0.9);
-            color: #333;
-            font-size: 1.1rem;
-            text-align: center;
-            outline: none;
-            z-index: 25;
-            position: relative;
-            pointer-events: auto;
-        }
+h2.question {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #333;
+    text-align: center;
+}
 
-        /* --- 4. FINAL --- */
-        #final-sequence {
-            position: fixed;
-            inset: 0;
-            background: black;
-            z-index: 80;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 2s ease;
-        }
+input {
+    width: 80%;
+    max-width: 300px;
+    padding: 12px 20px;
+    border: 2px solid #333;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.9);
+    font-size: 1.1rem;
+    text-align: center;
+    outline: none;
+}
 
-        .final-text {
-            color: white;
-            font-size: 1.5rem;
-            margin-bottom: 40px;
-            opacity: 0;
-            transition: opacity 2s ease;
-            font-weight: 300;
-            text-align: center;
-        }
+/* FINAL */
+#final-sequence {
+    position: fixed;
+    inset: 0;
+    background: black;
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
+}
 
-        .digit-reveal {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 2s ease;
-        }
+.final-text {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    opacity: 0;
+    transition: opacity 2s ease;
+    text-align: center;
+}
 
-        .unlock-label {
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-            color: #888;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
+.digit-reveal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
 
-        .number-6 {
-            font-size: 9rem;
-            font-weight: 100;
-            color: white;
-            text-shadow: 0 0 40px rgba(255,255,255,0.8);
-        }
-    </style>
+.unlock-label {
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.number-6 {
+    font-size: 9rem;
+    font-weight: 100;
+    color: white;
+    text-shadow: 0 0 40px rgba(255,255,255,0.8);
+}
+</style>
 </head>
+
 <body>
 
-    <!-- INÍCIO -->
-    <div id="start-overlay">
-        <button class="start-btn" onclick="startExperience()">Iniciar Memória</button>
-        <p id="status-msg"></p>
+<!-- INÍCIO -->
+<div id="start-overlay">
+    <button class="start-btn" onclick="startExperience()">Iniciar Memória</button>
+</div>
+
+<!-- VÍDEO -->
+<div id="video-container">
+    <video id="intro-video" playsinline preload="auto">
+        <source src="video_intro.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- JOGO -->
+<div id="game-container">
+    <div id="lightning-bolt"></div>
+
+    <div class="ui-layer" id="ui-box">
+        <h2 class="question">Qual foi o começo?</h2>
+        <input type="text" id="answer-input" placeholder="Digite..." autocomplete="off">
     </div>
+</div>
 
-    <!-- VÍDEO -->
-    <div id="video-container">
-        <video id="intro-video" playsinline preload="auto">
-            <source src="video_intro.mp4" type="video/mp4">
-        </video>
+<!-- FINAL -->
+<div id="final-sequence">
+    <p class="final-text" id="end-phrase">Foi ali que tudo começou.</p>
+
+    <div class="digit-reveal" id="digit-box">
+        <span class="unlock-label">Dígito Desbloqueado</span>
+        <span class="number-6">6</span>
     </div>
+</div>
 
-    <!-- JOGO -->
-    <div id="game-container">
-        <div id="lightning-bolt"></div>
+<script>
+const overlay = document.getElementById('start-overlay');
+const videoContainer = document.getElementById('video-container');
+const video = document.getElementById('intro-video');
+const gameContainer = document.getElementById('game-container');
+const input = document.getElementById('answer-input');
+const bolt = document.getElementById('lightning-bolt');
 
-        <div class="ui-layer" id="ui-box">
-            <h2 class="question">Qual foi o começo?</h2>
-            <input type="text" id="answer-input" placeholder="Digite..." autocomplete="off">
-        </div>
-    </div>
+function startExperience() {
+    videoContainer.style.opacity = 1;
+    video.play();
+    overlay.style.opacity = 0;
+    setTimeout(() => overlay.style.display = 'none', 500);
+}
 
-    <!-- FINAL -->
-    <div id="final-sequence">
-        <p class="final-text" id="end-phrase">Foi ali que tudo começou.</p>
+video.onended = () => {
+    videoContainer.style.opacity = 0;
+    setTimeout(() => {
+        videoContainer.style.display = 'none';
+        gameContainer.style.opacity = 1;
+    }, 1000);
+};
 
-        <div class="digit-reveal" id="digit-box">
-            <span class="unlock-label">Dígito Desbloqueado</span>
-            <span class="number-6">6</span>
-        </div>
-    </div>
+input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkAnswer();
+});
 
-    <script>
-        const overlay = document.getElementById('start-overlay');
+function checkAnswer() {
+    if (input.value.trim().toLowerCase() === 'senai') success();
+    else shake();
+}
+
+function shake() {
+    input.style.transform = 'translateX(5px)';
+    setTimeout(() => input.style.transform = 'translateX(-5px)', 50);
+    setTimeout(() => input.style.transform = 'translateX(0)', 100);
+}
+
+function success() {
+    document.getElementById('ui-box').style.opacity = 0;
+    bolt.classList.add('active');
+
+    setTimeout(() => {
+        const final = document.getElementById('final-sequence');
+        final.style.opacity = 1;
+        setTimeout(() => document.getElementById('end-phrase').style.opacity = 1, 1000);
+        setTimeout(() => document.getElementById('digit-box').style.opacity = 1, 3500);
+    }, 2000);
+}
+</script>
+
+</body>
+</html>t.getElementById('start-overlay');
         const videoContainer = document.getElementById('video-container');
         const video = document.getElementById('intro-video');
         const gameContainer = document.getElementById('game-container');
