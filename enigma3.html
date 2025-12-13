@@ -82,28 +82,24 @@
             opacity: 0;
             transition: opacity 2s ease;
         }
-
-        /* --- CÍRCULO DO RAIO --- */
+                /* --- CÍRCULO DO RAIO --- */
         #lightning-bolt {
             position: absolute;
-            top: 51%;
-            left: 35%;
+            top: 51%;   /* Ajuste para subir/descer */
+            left: 35%;  /* Ajuste para esquerda/direita */
             width: 10%;
             height: 10%;
             border-radius: 50%;
             pointer-events: none;
-            opacity: 0;
+            
+            /* --- MUDANÇA PARA TESTE --- */
+            opacity: 1; /* Mude de 0 para 1 para ver agora */
+            border: 2px solid red; /* Adicione isso para ver a borda */
+            background-color: rgba(255, 0, 0, 0.3); /* Fundo vermelho fraco */
+            
             transition: opacity 0.5s ease;
         }
-
-        #lightning-bolt.active {
-            opacity: 1;
-            box-shadow:
-                0 0 30px rgba(255,215,0,0.6),
-                0 0 60px rgba(255,215,0,0.8),
-                0 0 90px rgba(255,215,0,1);
-            animation: pulse 0.6s infinite alternate;
-        }
+        
 
         @keyframes pulse {
             from { transform: scale(1); }
@@ -279,11 +275,6 @@
                 setTimeout(() => document.getElementById('end-phrase').style.opacity = 1, 1000);
                 setTimeout(() => document.getElementById('digit-box').style.opacity = 1, 3500);
             }, 2000);
-        }
-    </script>
-
-</body>
-</html>l>0);
         }
     </script>
 
