@@ -1,323 +1,300 @@
 <!doctype html>
 <html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>O Cofre</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-
-html,body{
-    width:100%;
-    height:100%;
-    font-family:'Montserrat',sans-serif;
-    background:black;
-    color:white;
-    overflow:hidden;
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O Cofre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* ---------- VINHETA ---------- */
-.vignette{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    background:radial-gradient(circle, rgba(0,0,0,0) 55%, rgba(0,0,0,0.65) 100%);
-    opacity:0;
-    transition:opacity 2s ease;
-    z-index:90;
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: black;
+    color: white;
+    overflow: hidden;
 }
 
 /* ---------- PRÓLOGO ---------- */
-#intro{
-    position:fixed;
-    inset:0;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:40px;
-    z-index:100;
+#intro {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    z-index: 100;
 }
 
-.intro-text{
-    font-size:1.4rem;
-    opacity:0;
-    transition:opacity 1.5s;
-    max-width:600px;
-    line-height:1.6;
+.intro-text {
+    font-size: 1.4rem;
+    opacity: 0;
+    transition: opacity 1.5s;
+    max-width: 600px;
+    line-height: 1.6;
 }
 
-#start-btn{
-    position:absolute;
-    bottom:12%;
-    padding:14px 36px;
-    border:1px solid white;
-    background:transparent;
-    color:white;
-    border-radius:30px;
-    font-size:1.1rem;
-    cursor:pointer;
+#start-btn {
+    position: absolute;
+    bottom: 12%;
+    padding: 14px 36px;
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
 }
 
-/* ---------- SALA ---------- */
-#dark-room{
-    position:fixed;
-    inset:0;
-    background:radial-gradient(circle at center, #111 0%, #000 75%);
-    display:none;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 2.5s ease;
-    z-index:50;
-    animation:flicker 9s infinite;
+/* ---------- SALA ESCURA ---------- */
+#dark-room {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #111 0%, #000 75%);
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2.5s ease;
+    z-index: 50;
 }
 
-@keyframes flicker{
-    0%,100%{opacity:1}
-    50%{opacity:0.97}
+/* ---------- IMAGEM DO COFRE ---------- */
+#chest {
+    width: 260px;
+    height: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.6s ease;
+    box-shadow: 0 0 40px rgba(255,255,255,0.12);
 }
 
-/* ---------- COFRE ---------- */
-#chest{
-    width:260px;
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%) scale(1);
-    transition:transform 0.6s ease;
-    box-shadow:0 0 40px rgba(255,255,255,0.12);
-}
-
-#approach-button{
-    position:absolute;
-    bottom:80px;
-    left:50%;
-    transform:translateX(-50%);
-    padding:14px 36px;
-    border:1px solid rgba(255,255,255,0.4);
-    background:transparent;
-    color:white;
-    border-radius:30px;
-    font-size:0.9rem;
-    letter-spacing:3px;
-    cursor:pointer;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 1.2s ease;
+/* ---------- BOTÃO APROXIMAR ---------- */
+#approach-button {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 36px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: transparent;
+    color: white;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
 }
 
 /* ---------- TELA DO COFRE ---------- */
-#vault{
-    position:fixed;
-    inset:0;
-    background:radial-gradient(circle at center, #222 0%, #000 70%);
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 1.5s ease;
+#vault {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #222 0%, #000 70%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
 }
 
 /* ---------- TRANCAS ---------- */
-.dials{display:flex;gap:16px}
-
-.dial{display:flex;flex-direction:column;align-items:center}
-
-.dial button{
-    background:transparent;
-    border:none;
-    color:white;
-    font-size:1.4rem;
-    cursor:pointer;
+.dials {
+    display: flex;
+    gap: 16px;
 }
 
-.number{
-    font-size:2.4rem;
-    margin:8px 0;
-    transition:transform 0.2s ease,color 0.3s ease;
+.dial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.correct{color:#eee}
-
-.hint{
-    margin-top:30px;
-    font-size:0.9rem;
-    color:#aaa;
+.dial button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
 }
 
-audio{display:none}
+.number {
+    font-size: 2.4rem;
+    margin: 8px 0;
+}
 
-/* ---------- RESPIRA ---------- */
-@keyframes pulse{
-    0%,100%{background-size:100% 100%}
-    50%{background-size:110% 110%}
+.hint {
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+audio {
+    display: none;
 }
 </style>
-</head>
+ </head>
+ <body>
+  <audio id="ambient" src="ambiente.mp3" loop></audio>
+  <!-- PRÓLOGO -->
+  <div id="intro">
+   <div class="intro-text" id="text"></div>
+   <button id="start-btn">Iniciar</button>
+  </div>
+  <!-- SALA -->
+  <div id="dark-room">
+   <!-- troque o src pelo nome da sua imagem -->
+   <img id="chest" src="cofre.png" alt="Cofre">
+   <button id="approach-button">APROXIMAR-SE</button>
+  </div>
+  <!-- COFRE -->
+  <div id="vault">
+   <div class="dials" id="dials"></div>
+   <div class="hint">Talvez nem tudo se abra de primeira.</div>
+  </div>
+  <script>
+const textEl = document.getElementById("text");
+const intro = document.getElementById("intro");
+const startBtn = document.getElementById("start-btn");
+const darkRoom = document.getElementById("dark-room");
+const approachBtn = document.getElementById("approach-button");
+const chest = document.getElementById("chest");
+const vault = document.getElementById("vault");
+const ambient = document.getElementById("ambient");
 
-<body>
-
-<!-- ÁUDIOS -->
-<audio id="ambient" src="ambiente.mp3" loop></audio>
-<audio id="tick" src="tick.mp3"></audio>
-<audio id="lock" src="lock-correct.mp3"></audio>
-<audio id="vaultSound" src="vault-response.mp3"></audio>
-
-<div class="vignette" id="vignette"></div>
-
-<!-- PRÓLOGO -->
-<div id="intro">
-    <div class="intro-text" id="text"></div>
-    <button id="start-btn">Iniciar</button>
-</div>
-
-<!-- SALA -->
-<div id="dark-room">
-    <img id="chest" src="cofre.png" alt="Cofre">
-    <button id="approach-button">APROXIMAR-SE</button>
-</div>
-
-<!-- COFRE -->
-<div id="vault">
-    <div class="dials" id="dials"></div>
-    <div class="hint">Talvez nem tudo se abra de primeira.</div>
-</div>
-
-<script>
-const textEl=document.getElementById("text");
-const intro=document.getElementById("intro");
-const startBtn=document.getElementById("start-btn");
-const darkRoom=document.getElementById("dark-room");
-const approachBtn=document.getElementById("approach-button");
-const chest=document.getElementById("chest");
-const vault=document.getElementById("vault");
-const ambient=document.getElementById("ambient");
-const vignette=document.getElementById("vignette");
-
-const tick=document.getElementById("tick");
-const lock=document.getElementById("lock");
-const vaultSound=document.getElementById("vaultSound");
-
-const lines=[
- "Algumas coisas não foram feitas para serem abertas de imediato.",
- "Elas esperam.",
- "Não por tempo...",
- "Mas pela pessoa certa.",
- "Este cofre ficou aqui por muito tempo.",
- "Guardando fragmentos.",
- "Começos.",
- "Lembranças.",
- "Se você está vendo isso agora...",
- "Talvez seja porque chegou a hora de tentar."
+const lines = [
+    "Algumas coisas não foram feitas para serem abertas de imediato.",
+    "Elas esperam.",
+    "Não por tempo...",
+    "Mas pela pessoa certa.",
+    "Este cofre ficou aqui por muito tempo.",
+    "Guardando fragmentos.",
+    "Começos.",
+    "Lembranças.",
+    "Se você está vendo isso agora...",
+    "Talvez seja porque chegou a hora de tentar."
 ];
 
-let index=0;
+let index = 0;
 
-function showNextLine(){
- if(index>=lines.length){
-  setTimeout(()=>{
-   intro.style.opacity=0;
-   setTimeout(()=>{
-    intro.style.display="none";
-    darkRoom.style.display="block";
-    vignette.style.opacity=1;
-    setTimeout(()=>{
-     darkRoom.style.opacity=1;
-     darkRoom.style.pointerEvents="auto";
-     setTimeout(()=>{
-      approachBtn.style.opacity=1;
-      approachBtn.style.pointerEvents="auto";
-     },2000);
-    },50);
-   },1500);
-  },2000);
-  return;
- }
- textEl.style.opacity=0;
- setTimeout(()=>{
-  textEl.innerText=lines[index++];
-  textEl.style.opacity=1;
-  setTimeout(showNextLine,2600);
- },800);
+function showNextLine() {
+    if (index >= lines.length) {
+        setTimeout(() => {
+            intro.style.opacity = 0;
+            setTimeout(() => {
+                intro.style.display = "none";
+
+                darkRoom.style.display = "block";
+                setTimeout(() => {
+                    darkRoom.style.opacity = 1;
+                    darkRoom.style.pointerEvents = "auto";
+
+                    setTimeout(() => {
+                        approachBtn.style.opacity = 1;
+                        approachBtn.style.pointerEvents = "auto";
+                    }, 2000);
+                }, 50);
+            }, 1500);
+        }, 2000);
+        return;
+    }
+
+    textEl.style.opacity = 0;
+    setTimeout(() => {
+        textEl.innerText = lines[index];
+        textEl.style.opacity = 1;
+        index++;
+        setTimeout(showNextLine, 2600);
+    }, 800);
 }
 
-/* ---------- MOBILE SAFE ---------- */
-startBtn.onclick=()=>{
- startBtn.style.display="none";
- showNextLine();
+startBtn.onclick = () => {
+    ambient.volume = 0;
+    ambient.play();
+    let v = 0;
+    const fade = setInterval(() => {
+        v += 0.02;
+        ambient.volume = Math.min(v, 0.6);
+        if (v >= 0.6) clearInterval(fade);
+    }, 100);
 
- try{
-  ambient.volume=0;
-  const p=ambient.play();
-  if(p!==undefined){
-   p.then(()=>{
-    let v=0;
-    const fade=setInterval(()=>{
-     v+=0.02;
-     ambient.volume=Math.min(v,0.6);
-     if(v>=0.6) clearInterval(fade);
-    },100);
-   });
-  }
- }catch(e){}
+    startBtn.style.display = "none";
+    showNextLine();
 };
 
-/* ---------- APROXIMAR ---------- */
-approachBtn.onclick=()=>{
- chest.style.transform="translate(-50%,-50%) scale(1.45)";
- setTimeout(()=>{
-  darkRoom.style.opacity=0;
-  setTimeout(()=>{
-   darkRoom.style.display="none";
-   vault.style.display="flex";
-   setTimeout(()=>{
-    vault.style.opacity=1;
-    vault.style.pointerEvents="auto";
-   },50);
-  },800);
- },500);
+/* ---------- APROXIMAÇÃO ---------- */
+approachBtn.onclick = () => {
+    chest.style.transform = "translate(-50%, -50%) scale(1.45)";
+
+    setTimeout(() => {
+        darkRoom.style.opacity = 0;
+        darkRoom.style.pointerEvents = "none";
+
+        setTimeout(() => {
+            darkRoom.style.display = "none";
+
+            vault.style.display = "flex";
+            setTimeout(() => {
+                vault.style.opacity = 1;
+                vault.style.pointerEvents = "auto";
+            }, 50);
+        }, 800);
+    }, 500);
 };
 
 /* ---------- TRAVA ---------- */
-const PASSWORD=[6,1,4,2,9];
-const dials=document.getElementById("dials");
-let values=[0,0,0,0,0];
-let solved=false;
+const PASSWORD = [6,1,4,2,9];
+const dials = document.getElementById("dials");
+let values = [0,0,0,0,0];
 
-values.forEach((_,i)=>{
- const dial=document.createElement("div");
- dial.className="dial";
+values.forEach((_, i) => {
+    const dial = document.createElement("div");
+    dial.className = "dial";
 
- const up=document.createElement("button");
- up.innerText="▲";
- up.onclick=()=>update(i,1);
+    const up = document.createElement("button");
+    up.innerText = "▲";
+    up.onclick = () => update(i, 1);
 
- const num=document.createElement("div");
- num.className="number";
- num.innerText="0";
+    const num = document.createElement("div");
+    num.className = "number";
+    num.innerText = "0";
 
- const down=document.createElement("button");
- down.innerText="▼";
- down.onclick=()=>update(i,-1);
+    const down = document.createElement("button");
+    down.innerText = "▼";
+    down.onclick = () => update(i, -1);
 
- dial.append(up,num,down);
- dials.appendChild(dial);
- dial.num=num;
+    dial.appendChild(up);
+    dial.appendChild(num);
+    dial.appendChild(down);
+    dials.appendChild(dial);
+
+    dial.num = num;
 });
 
-function update(i,delta){
- if(solved) return;
+function update(i, delta) {
+    values[i] = (values[i] + delta + 10) % 10;
+    dials.children[i].num.innerText = values[i];
 
- tick.currentTime=0;
- tick.play();
-
- values[i]=(values[i]+delta+10)%10;
+    if (values.every((v, idx) => v === PASSWORD[idx])) {
+        alert("O cofre reagiu...");
+    }
+}
+</script>
+ </body>
+</html>delta+10)%10;
  const numEl=dials.children[i].num;
  numEl.innerText=values[i];
 
