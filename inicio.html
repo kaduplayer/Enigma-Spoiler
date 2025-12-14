@@ -23,19 +23,19 @@ html, body {
     touch-action: manipulation;
 }
 
-/* ---------- VINHETA (Bordas Escuras) ---------- */
+/* ---------- VINHETA (bordas escuras) ---------- */
 #vignette {
     position: fixed;
     inset: 0;
     background: radial-gradient(
         ellipse at center,
-        transparent 30%,
-        rgba(0,0,0,0.9) 100%
+        transparent 20%,
+        rgba(0, 0, 0, 0.9) 100%
     );
-    pointer-events: none;
-    z-index: 200;
     opacity: 0;
-    transition: opacity 2s ease;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+    z-index: 60;
 }
 
 /* ---------- PRÓLOGO ---------- */
@@ -48,41 +48,43 @@ html, body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 40px;
+    padding: 30px;
     z-index: 100;
 }
 
 .intro-text {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 1.5s ease, transform 1.5s ease;
+    transition: opacity 1.2s ease, transform 1.2s ease;
     max-width: 600px;
-    line-height: 1.6;
-    min-height: 100px;
+    line-height: 1.8;
+    min-height: 80px;
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
 #start-btn {
     position: absolute;
-    bottom: 12%;
-    padding: 14px 36px;
-    border: 1px solid rgba(255,255,255,0.5);
+    bottom: 15%;
+    padding: 16px 42px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     background: transparent;
     color: white;
     border-radius: 30px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
+    letter-spacing: 2px;
     transition: all 0.3s ease;
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 50px;
+    min-width: 50px;
+    backdrop-filter: blur(5px);
 }
 
-#start-btn:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.8);
+#start-btn:hover,
+#start-btn:active {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.6);
     transform: scale(1.05);
 }
 
@@ -94,21 +96,8 @@ html, body {
     display: none;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 2.5s ease;
+    transition: opacity 2s ease;
     z-index: 50;
-}
-
-/* Animação de luz falhando (Flicker) */
-@keyframes flicker {
-    0% { opacity: 1; }
-    3% { opacity: 0.95; }
-    6% { opacity: 1; }
-    7% { opacity: 0.9; }
-    8% { opacity: 1; }
-    9% { opacity: 1; }
-    10% { opacity: 0.92; }
-    11% { opacity: 1; }
-    100% { opacity: 1; }
 }
 
 /* ---------- LUZ DA SALA COM FLICKER ---------- */
@@ -118,8 +107,8 @@ html, body {
     background: radial-gradient(
         circle at center,
         rgba(255, 240, 180, 0.08) 0%,
-        rgba(255, 220, 140, 0.04) 25%,
-        rgba(100, 80, 40, 0.01) 45%,
+        rgba(255, 220, 140, 0.05) 25%,
+        rgba(100, 80, 40, 0.02) 45%,
         transparent 70%
     );
     opacity: 0;
@@ -127,8 +116,15 @@ html, body {
     z-index: 1;
 }
 
+@keyframes light-flicker {
+    0%, 100% { opacity: 1; }
+    25% { opacity: 0.98; }
+    50% { opacity: 0.99; }
+    75% { opacity: 0.97; }
+}
+
 .light-flickering {
-    animation: flicker 7s infinite ease-in-out;
+    animation: light-flicker 7s ease-in-out infinite;
 }
 
 /* ---------- IMAGEM DO COFRE ---------- */
@@ -139,11 +135,11 @@ html, body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) scale(1);
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
     z-index: 2;
     opacity: 0;
-    transition: opacity 1.5s ease, transform 0.8s ease;
+    transition: opacity 1.5s ease, transform 1s ease;
 }
 
 /* ---------- BOTÃO APROXIMAR ---------- */
@@ -152,10 +148,10 @@ html, body {
     bottom: 80px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 14px 36px;
-    border: 1px solid rgba(255,255,255,0.3);
-    background: rgba(0,0,0,0.3);
-    color: rgba(255,255,255,0.9);
+    padding: 16px 40px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.85);
     border-radius: 30px;
     font-size: 0.9rem;
     letter-spacing: 3px;
@@ -163,10 +159,10 @@ html, body {
     opacity: 0;
     pointer-events: none;
     transition: all 0.4s ease;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     z-index: 3;
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 48px;
+    min-width: 48px;
 }
 
 @keyframes pulse-button {
@@ -176,7 +172,7 @@ html, body {
     }
     50% { 
         opacity: 1;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
     }
 }
 
@@ -186,12 +182,12 @@ html, body {
 
 #approach-button:hover,
 #approach-button:active {
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.6);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.5);
     transform: translateX(-50%) scale(1.05);
 }
 
-/* ---------- TELA DO COFRE (Zoom) ---------- */
+/* ---------- TELA DO COFRE ---------- */
 #vault {
     position: fixed;
     inset: 0;
@@ -206,21 +202,17 @@ html, body {
     z-index: 80;
 }
 
-/* Efeito de Respiração (Sucesso) */
-@keyframes breathe {
-    0% { 
-        background: #0a0a0a;
+@keyframes breathing-bg {
+    0%, 100% { 
+        background-color: #0a0a0a;
     }
     50% { 
-        background: #121212;
-    }
-    100% { 
-        background: #0a0a0a;
+        background-color: #111;
     }
 }
 
-#vault.solved {
-    animation: breathe 4s ease-in-out infinite;
+.breathing {
+    animation: breathing-bg 4s ease-in-out infinite;
 }
 
 /* ---------- TRANCAS ---------- */
@@ -240,19 +232,18 @@ html, body {
 .dial button {
     background: transparent;
     border: none;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 1.6rem;
     cursor: pointer;
-    transition: all 0.2s ease;
     padding: 12px 20px;
+    transition: all 0.2s ease;
     border-radius: 8px;
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 50px;
+    min-width: 50px;
 }
 
 .dial button:active {
-    background: rgba(255,255,255,0.05);
-    color: white;
+    background: rgba(255, 255, 255, 0.05);
     transform: scale(0.95);
 }
 
@@ -269,29 +260,39 @@ html, body {
     width: 40px;
 }
 
-/* Micro-feedback: Pop ao girar */
-.number.pop {
-    transform: scale(1.3);
+/* Micro-feedback nos números */
+.number.zooming {
+    transform: scale(1.25);
     color: white;
 }
 
-/* Micro-feedback: Dígito correto individual */
 .number.correct-digit {
     color: #d4af37;
-    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+/* Animação do cofre respondendo */
+@keyframes chest-response {
+    0%, 100% { transform: translate(-50%, -50%) scale(1.45); }
+    50% { transform: translate(-50%, -50%) scale(1.48); }
+}
+
+.chest-responding {
+    animation: chest-response 3s ease-in-out infinite;
 }
 
 .hint {
     margin-top: 30px;
     font-size: 0.9rem;
-    color: #aaa;
-    opacity: 0.7;
+    color: #777;
+    letter-spacing: 1px;
     transition: all 0.5s ease;
 }
 
+/* ---------- FEEDBACK FINAL ---------- */
 #feedback {
     position: absolute;
-    bottom: 100px;
+    bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 1rem;
@@ -316,9 +317,9 @@ audio {
     }
     
     #start-btn {
-        padding: 14px 32px;
-        font-size: 1rem;
-        bottom: 15%;
+        padding: 14px 36px;
+        font-size: 0.95rem;
+        bottom: 20%;
     }
     
     .dials {
@@ -346,33 +347,41 @@ audio {
     
     #approach-button {
         bottom: 70px;
-        padding: 14px 32px;
+        padding: 14px 36px;
+        font-size: 0.85rem;
     }
 }
 </style>
 </head>
 <body>
-  
+<!-- ÁUDIOS -->
+<audio id="ambient" src="ambiente.mp3" loop></audio>
+<audio id="tick-sound" src="tick.mp3" preload="auto"></audio>
+<audio id="correct-sound" src="lock-correct.mp3" preload="auto"></audio>
+<audio id="vault-sound" src="vault-response.mp3" preload="auto"></audio>
+
+<!-- VINHETA -->
 <div id="vignette"></div>
 
-<audio id="ambient" src="ambiente.mp3" loop></audio>
-<audio id="sfx-tick" src="tick.mp3" preload="auto"></audio>
-<audio id="sfx-lock" src="lock-correct.mp3" preload="auto"></audio>
-<audio id="sfx-response" src="vault-response.mp3" preload="auto"></audio>
-
+<!-- PRÓLOGO -->
 <div id="intro">
     <div class="intro-text" id="text"></div>
     <button id="start-btn">Iniciar</button>
 </div>
 
+<!-- SALA -->
 <div id="dark-room">
     <!-- Luz da sala -->
     <div id="room-light"></div>
     
+    <!-- Imagem do cofre -->
     <img id="chest" src="cofre.png" alt="Cofre">
+    
+    <!-- Botão de aproximação -->
     <button id="approach-button" class="pulse">APROXIMAR-SE</button>
 </div>
 
+<!-- COFRE -->
 <div id="vault">
     <div class="dials" id="dials"></div>
     <div class="hint">Talvez nem tudo se abra de primeira.</div>
@@ -380,6 +389,8 @@ audio {
 </div>
 
 <script>
+// Elementos DOM
+const vignette = document.getElementById("vignette");
 const textEl = document.getElementById("text");
 const intro = document.getElementById("intro");
 const startBtn = document.getElementById("start-btn");
@@ -388,20 +399,25 @@ const roomLight = document.getElementById("room-light");
 const approachBtn = document.getElementById("approach-button");
 const chest = document.getElementById("chest");
 const vault = document.getElementById("vault");
-const vignette = document.getElementById("vignette");
 const dials = document.getElementById("dials");
 const feedback = document.getElementById("feedback");
 
 // Áudios
 const ambient = document.getElementById("ambient");
-const sfxTick = document.getElementById("sfx-tick");
-const sfxLock = document.getElementById("sfx-lock");
-const sfxResponse = document.getElementById("sfx-response");
+const tickSound = document.getElementById("tick-sound");
+const correctSound = document.getElementById("correct-sound");
+const vaultSound = document.getElementById("vault-sound");
 
-// Configuração de volume dos efeitos
-sfxTick.volume = 0.4;
-sfxLock.volume = 0.6;
-sfxResponse.volume = 0.8;
+// Configurar volumes
+tickSound.volume = 0.3;
+correctSound.volume = 0.4;
+vaultSound.volume = 0.5;
+
+// Senha e estado
+const PASSWORD = [6, 1, 4, 2, 9];
+let values = [0, 0, 0, 0, 0];
+let correctDigits = [false, false, false, false, false];
+let allCorrect = false;
 
 // Textos do prólogo
 const lines = [
@@ -434,15 +450,16 @@ function showNextLine() {
             setTimeout(() => {
                 intro.style.display = "none";
 
-                // Entrada da Sala
+                // Mostrar sala escura
                 darkRoom.style.display = "block";
-                vignette.style.opacity = 0.8; // Ativa vinheta
-
                 setTimeout(() => {
                     darkRoom.style.opacity = 1;
                     darkRoom.style.pointerEvents = "auto";
                     
-                    // Acender luz gradualmente com flicker
+                    // Ativar vinheta
+                    vignette.style.opacity = 0.8;
+                    
+                    // Acender luz gradualmente
                     setTimeout(() => {
                         roomLight.style.opacity = 1;
                         roomLight.classList.add("light-flickering");
@@ -488,15 +505,15 @@ startBtn.onclick = () => {
     let v = 0;
     const fade = setInterval(() => {
         v += 0.02;
-        ambient.volume = Math.min(v, 0.6);
-        if (v >= 0.6) clearInterval(fade);
+        ambient.volume = Math.min(v, 0.5);
+        if (v >= 0.5) clearInterval(fade);
     }, 100);
 
     startBtn.style.display = "none";
     showNextLine();
 };
 
-/* ---------- APROXIMAÇÃO ---------- */
+// Aproximação do cofre
 approachBtn.onclick = () => {
     // Zoom no cofre
     chest.style.transform = "translate(-50%, -50%) scale(1.45)";
@@ -505,36 +522,31 @@ approachBtn.onclick = () => {
     approachBtn.style.opacity = 0;
     approachBtn.style.pointerEvents = "none";
 
-    // Suaviza vinheta levemente ao aproximar
-    vignette.style.opacity = 0.6; 
-
     setTimeout(() => {
+        // Transição para tela do cofre
         darkRoom.style.opacity = 0;
         darkRoom.style.pointerEvents = "none";
 
         setTimeout(() => {
             darkRoom.style.display = "none";
-
+            
+            // Ajustar vinheta
+            vignette.style.opacity = 0.9;
+            
+            // Mostrar tela do cofre
             vault.style.display = "flex";
             setTimeout(() => {
                 vault.style.opacity = 1;
                 vault.style.pointerEvents = "auto";
-                vignette.style.opacity = 0.9; // Reforça vinheta no close
                 
                 // Criar trancas
                 createDials();
-            }, 50);
+            }, 100);
         }, 800);
     }, 600);
 };
 
-/* ---------- TRAVA & LÓGICA ---------- */
-const PASSWORD = [6, 1, 4, 2, 9];
-let values = [0, 0, 0, 0, 0];
-let correctDigits = [false, false, false, false, false];
-let isSolved = false;
-
-// Criar trancas
+// Criar trancas (dígitos)
 function createDials() {
     dials.innerHTML = "";
     
@@ -543,126 +555,117 @@ function createDials() {
         dial.className = "dial";
         dial.id = `dial-${i}`;
 
+        // Botão para cima
         const up = document.createElement("button");
         up.innerText = "▲";
-        up.addEventListener("click", () => update(i, 1));
+        up.addEventListener("click", () => updateDial(i, 1));
         up.addEventListener("touchstart", (e) => {
             e.preventDefault();
-            update(i, 1);
+            updateDial(i, 1);
         });
 
+        // Número
         const num = document.createElement("div");
         num.className = "number";
         num.id = `number-${i}`;
         num.innerText = "0";
 
+        // Botão para baixo
         const down = document.createElement("button");
         down.innerText = "▼";
-        down.addEventListener("click", () => update(i, -1));
+        down.addEventListener("click", () => updateDial(i, -1));
         down.addEventListener("touchstart", (e) => {
             e.preventDefault();
-            update(i, -1);
+            updateDial(i, -1);
         });
 
         dial.appendChild(up);
         dial.appendChild(num);
         dial.appendChild(down);
         dials.appendChild(dial);
+
+        // Salvar referência
+        dial.num = num;
     });
 }
 
-function update(i, delta) {
-    if (isSolved) return; // Trava interação se já resolveu
-
+// Atualizar dígito
+function updateDial(i, delta) {
+    // Tocar som do giro
+    playSound(tickSound);
+    
+    // Atualizar valor
     values[i] = (values[i] + delta + 10) % 10;
-    const numEl = document.getElementById(`number-${i}`);
-    numEl.innerText = values[i];
-
-    // Efeito Visual: Pop (Zoom)
-    numEl.classList.remove("pop");
-    void numEl.offsetWidth; // Trigger reflow para reiniciar animação
-    numEl.classList.add("pop");
     
-    // Remover efeito pop após animação
+    // Atualizar display
+    const numElement = document.getElementById(`number-${i}`);
+    numElement.innerText = values[i];
+    
+    // Animação de zoom
+    numElement.classList.add("zooming");
     setTimeout(() => {
-        numEl.classList.remove("pop");
+        numElement.classList.remove("zooming");
     }, 300);
-
-    // Lógica de Som e Feedback Individual
-    // Se este dígito específico estiver correto:
-    if (values[i] === PASSWORD[i]) {
-        playSound(sfxLock);
-        numEl.classList.add("correct-digit"); // Brilho sutil
-        correctDigits[i] = true;
-    } else {
-        playSound(sfxTick);
-        numEl.classList.remove("correct-digit");
-        correctDigits[i] = false;
-    }
-
-    // Verifica Senha Completa
-    const allCorrect = correctDigits.every(c => c);
     
-    if (allCorrect && !isSolved) {
-        isSolved = true;
-        onSuccess();
-    } else if (isSolved && !allCorrect) {
-        // Se deixou de estar correta
-        isSolved = false;
-        vault.classList.remove("solved");
-        vignette.style.opacity = 0.9;
-        feedback.style.opacity = 0;
-        
-        // Reativar botões
-        const buttons = document.querySelectorAll(".dial button");
-        buttons.forEach(btn => btn.style.opacity = 1);
-        
-        // Restaurar hint
-        const hint = document.querySelector(".hint");
-        hint.innerText = "Talvez nem tudo se abra de primeira.";
-        hint.style.color = "#aaa";
-        hint.style.textShadow = "none";
-    }
+    // Verificar senha
+    checkPassword();
 }
 
-function onSuccess() {
-    // Som de resposta
-    playSound(sfxResponse);
-
-    // Reação Visual
-    vault.classList.add("solved"); // Inicia respiração do fundo
-    vignette.style.transition = "opacity 3s ease";
-    vignette.style.opacity = 0.4; // Clareia as bordas
-
-    // Desabilita botões visualmente
-    const buttons = document.querySelectorAll(".dial button");
-    buttons.forEach(btn => {
-        btn.style.opacity = 0.3;
-        btn.style.pointerEvents = "none";
+// Verificar senha completa
+function checkPassword() {
+    // Verificar cada dígito
+    let newCorrectDigits = values.map((v, idx) => v === PASSWORD[idx]);
+    let changedDigits = [];
+    
+    // Encontrar dígitos que acabaram de ficar corretos
+    newCorrectDigits.forEach((isCorrect, i) => {
+        if (isCorrect && !correctDigits[i]) {
+            changedDigits.push(i);
+        }
     });
     
-    // Feedback na dica
-    const hint = document.querySelector(".hint");
-    hint.style.opacity = 0;
-    setTimeout(() => {
-        hint.innerText = "O mecanismo respondeu...";
-        hint.style.opacity = 1;
-        hint.style.color = "#d4af37";
-        hint.style.textShadow = "0 0 10px rgba(212, 175, 55, 0.5)";
-    }, 800);
+    // Atualizar estado
+    correctDigits = newCorrectDigits;
     
-    // Mostrar feedback adicional
-    setTimeout(() => {
-        feedback.textContent = "O cofre está desbloqueado. Continue...";
+    // Tocar som para dígitos que acabaram de ficar corretos
+    if (changedDigits.length > 0) {
+        playSound(correctSound);
+        
+        // Marcar dígitos corretos visualmente
+        changedDigits.forEach(i => {
+            const numElement = document.getElementById(`number-${i}`);
+            numElement.classList.add("correct-digit");
+        });
+    }
+    
+    // Verificar se TODOS estão corretos
+    const allCorrectNow = correctDigits.every(c => c);
+    
+    if (allCorrectNow && !allCorrect) {
+        // PRIMEIRA VEZ que a senha está completa
+        allCorrect = true;
+        
+        // Tocar som do cofre respondendo
+        setTimeout(() => playSound(vaultSound), 400);
+        
+        // Mostrar feedback
+        feedback.textContent = "O cofre respondeu...";
         feedback.style.opacity = 1;
-    }, 1500);
-}
-
-// Inicializar
-createDials();
-</script>
-</body>
-</html>t = "Algo se moveu dentro do cofre...";
+        
+        // Animação de respiração no fundo
+        vault.classList.add("breathing");
+        
+        // Suavizar vinheta
+        vignette.style.opacity = 0.4;
+        vignette.style.transition = "opacity 2s ease";
+        
+        // Animar cofre (se estivesse visível)
+        if (chest) {
+            chest.classList.add("chest-responding");
+        }
+        
+        // Atualizar hint
+        document.querySelector(".hint").textContent = "Algo se moveu dentro do cofre...";
         document.querySelector(".hint").style.color = "#d4af37";
         
     } else if (!allCorrectNow && allCorrect) {
