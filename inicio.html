@@ -1,13 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>O Cofre</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-
-<style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O Cofre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" rel="stylesheet">
+  <style>
 * {
     margin: 0;
     padding: 0;
@@ -148,32 +146,26 @@ audio {
     display: none;
 }
 </style>
-</head>
-
-<body>
-
-<audio id="ambient" src="ambiente.mp3" loop></audio>
-
-<!-- PRÓLOGO -->
-<div id="intro">
-    <div class="intro-text" id="text"></div>
-    <button id="start-btn">Iniciar</button>
-</div>
-
-<!-- SALA -->
-<div id="dark-room">
-    <!-- troque o src pelo nome da sua imagem -->
-    <img id="chest" src="cofre.png" alt="Cofre">
-    <button id="approach-button">APROXIMAR-SE</button>
-</div>
-
-<!-- COFRE -->
-<div id="vault">
-    <div class="dials" id="dials"></div>
-    <div class="hint">Talvez nem tudo se abra de primeira.</div>
-</div>
-
-<script>
+ </head>
+ <body>
+  <audio id="ambient" src="ambiente.mp3" loop></audio>
+  <!-- PRÓLOGO -->
+  <div id="intro">
+   <div class="intro-text" id="text"></div>
+   <button id="start-btn">Iniciar</button>
+  </div>
+  <!-- SALA -->
+  <div id="dark-room">
+   <!-- troque o src pelo nome da sua imagem -->
+   <img id="chest" src="cofre.png" alt="Cofre">
+   <button id="approach-button">APROXIMAR-SE</button>
+  </div>
+  <!-- COFRE -->
+  <div id="vault">
+   <div class="dials" id="dials"></div>
+   <div class="hint">Talvez nem tudo se abra de primeira.</div>
+  </div>
+  <script>
 const textEl = document.getElementById("text");
 const intro = document.getElementById("intro");
 const startBtn = document.getElementById("start-btn");
@@ -245,7 +237,7 @@ startBtn.onclick = () => {
 
 /* ---------- APROXIMAÇÃO ---------- */
 approachBtn.onclick = () => {
-    chest.style.transform = "translate(-50%, -50%) scale(1.15)";
+    chest.style.transform = "translate(-50%, -50%) scale(1.45)";
 
     setTimeout(() => {
         darkRoom.style.opacity = 0;
@@ -301,6 +293,5 @@ function update(i, delta) {
     }
 }
 </script>
-
-</body>
+ </body>
 </html>
