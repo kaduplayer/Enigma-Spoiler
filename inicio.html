@@ -9,153 +9,145 @@
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html, body {
-    width: 100%;
-    height: 100%;
-    font-family: 'Montserrat', sans-serif;
-    background: black;
-    color: white;
-    overflow: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: 'Montserrat', sans-serif;
+  background: black;
+  color: white;
+  overflow: hidden;
 }
 
 /* ---------- PRÓLOGO ---------- */
 #intro {
-    position: fixed;
-    inset: 0;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 40px;
-    z-index: 100;
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  z-index: 100;
 }
 
 .intro-text {
-    font-size: 1.4rem;
-    opacity: 0;
-    transition: opacity 1.5s;
-    max-width: 600px;
-    line-height: 1.6;
+  font-size: 1.4rem;
+  opacity: 0;
+  transition: opacity 1.5s;
+  max-width: 600px;
+  line-height: 1.6;
 }
 
 #start-btn {
-    position: absolute;
-    bottom: 12%;
-    padding: 14px 36px;
-    border: 1px solid white;
-    background: transparent;
-    color: white;
-    border-radius: 30px;
-    font-size: 1.1rem;
-    cursor: pointer;
+  position: absolute;
+  bottom: 12%;
+  padding: 14px 36px;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  cursor: pointer;
 }
 
 /* ---------- SALA ESCURA ---------- */
 #dark-room {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, #111 0%, #000 75%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 2.5s ease;
-    z-index: 50;
+  position: fixed;
+  inset: 0;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 2.5s ease;
+  z-index: 50;
 }
 
-/* ---------- COFRE EM CÓDIGO ---------- */
-#chest {
-    width: 220px;
-    height: 160px;
-    background: linear-gradient(180deg, #333, #111);
-    border-radius: 14px 14px 24px 24px;
-    margin: auto;
-    position: relative;
-    top: 35%;
-    box-shadow: 0 0 40px rgba(255,255,255,0.08);
+/* Imagem do cofre */
+#room-image {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-#chest::before {
-    content: "";
-    position: absolute;
-    top: 55%;
-    left: 0;
-    width: 100%;
-    height: 10px;
-    background: #000;
-    opacity: 0.4;
+#room-image img {
+  width: 75%;
+  max-width: 500px;
+  transition: transform 1s ease, opacity 1s ease;
 }
 
 /* ---------- BOTÃO APROXIMAR ---------- */
 #approach-button {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 14px 36px;
-    border: 1px solid rgba(255,255,255,0.4);
-    background: transparent;
-    color: white;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    letter-spacing: 3px;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 1.2s ease;
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 14px 36px;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: transparent;
+  color: white;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
 }
 
-/* ---------- TELA DO COFRE ---------- */
+/* ---------- TELA DA SENHA ---------- */
 #vault {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, #222 0%, #000 70%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 1.5s ease;
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #222 0%, #000 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
 }
 
 /* ---------- TRANCAS ---------- */
 .dials {
-    display: flex;
-    gap: 16px;
+  display: flex;
+  gap: 16px;
 }
 
 .dial {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .dial button {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.4rem;
-    cursor: pointer;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  cursor: pointer;
 }
 
 .number {
-    font-size: 2.4rem;
-    margin: 8px 0;
+  font-size: 2.4rem;
+  margin: 8px 0;
 }
 
 .hint {
-    margin-top: 30px;
-    font-size: 0.9rem;
-    color: #aaa;
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #aaa;
 }
 
 audio {
-    display: none;
+  display: none;
 }
 </style>
 </head>
@@ -165,20 +157,22 @@ audio {
 
 <!-- PRÓLOGO -->
 <div id="intro">
-    <div class="intro-text" id="text"></div>
-    <button id="start-btn">Iniciar</button>
+  <div class="intro-text" id="text"></div>
+  <button id="start-btn">Iniciar</button>
 </div>
 
-<!-- SALA -->
+<!-- SALA COM IMAGEM -->
 <div id="dark-room">
-    <div id="chest"></div>
-    <button id="approach-button">APROXIMAR-SE</button>
+  <div id="room-image">
+    <img id="cofre-img" src="cofre-sala.png" alt="Cofre">
+  </div>
+  <button id="approach-button">APROXIMAR-SE</button>
 </div>
 
-<!-- COFRE -->
+<!-- TELA DA SENHA -->
 <div id="vault">
-    <div class="dials" id="dials"></div>
-    <div class="hint">Talvez nem tudo se abra de primeira.</div>
+  <div class="dials" id="dials"></div>
+  <div class="hint">Talvez nem tudo se abra de primeira.</div>
 </div>
 
 <script>
@@ -187,76 +181,76 @@ const intro = document.getElementById("intro");
 const startBtn = document.getElementById("start-btn");
 const darkRoom = document.getElementById("dark-room");
 const approachBtn = document.getElementById("approach-button");
-const chest = document.getElementById("chest");
 const vault = document.getElementById("vault");
 const ambient = document.getElementById("ambient");
+const cofreImg = document.getElementById("cofre-img");
 
 const lines = [
-    "Algumas coisas não foram feitas para serem abertas de imediato.",
-    "Elas esperam.",
-    "Não por tempo...",
-    "Mas pela pessoa certa.",
-    "Este cofre ficou aqui por muito tempo.",
-    "Guardando fragmentos.",
-    "Começos.",
-    "Lembranças.",
-    "Se você está vendo isso agora...",
-    "Talvez seja porque chegou a hora de tentar."
+  "Algumas coisas não foram feitas para serem abertas de imediato.",
+  "Elas esperam.",
+  "Não por tempo...",
+  "Mas pela pessoa certa.",
+  "Este cofre ficou aqui por muito tempo.",
+  "Guardando fragmentos.",
+  "Começos.",
+  "Lembranças.",
+  "Se você está vendo isso agora...",
+  "Talvez seja porque chegou a hora de tentar."
 ];
 
 let index = 0;
 
 function showNextLine() {
-    if (index >= lines.length) {
-        setTimeout(() => {
-            intro.style.opacity = 0;
-            setTimeout(() => {
-                intro.style.display = "none";
-                darkRoom.style.opacity = 1;
-                darkRoom.style.pointerEvents = "auto";
-                setTimeout(() => {
-                    approachBtn.style.opacity = 1;
-                    approachBtn.style.pointerEvents = "auto";
-                }, 2000);
-            }, 1500);
-        }, 2000);
-        return;
-    }
-
-    textEl.style.opacity = 0;
+  if (index >= lines.length) {
     setTimeout(() => {
-        textEl.innerText = lines[index];
-        textEl.style.opacity = 1;
-        index++;
-        setTimeout(showNextLine, 2600);
-    }, 800);
+      intro.style.opacity = 0;
+      setTimeout(() => {
+        intro.style.display = "none";
+        darkRoom.style.opacity = 1;
+        darkRoom.style.pointerEvents = "auto";
+        setTimeout(() => {
+          approachBtn.style.opacity = 1;
+          approachBtn.style.pointerEvents = "auto";
+        }, 2000);
+      }, 1500);
+    }, 2000);
+    return;
+  }
+
+  textEl.style.opacity = 0;
+  setTimeout(() => {
+    textEl.innerText = lines[index];
+    textEl.style.opacity = 1;
+    index++;
+    setTimeout(showNextLine, 2600);
+  }, 800);
 }
 
 startBtn.onclick = () => {
-    ambient.volume = 0;
-    ambient.play();
-    let v = 0;
-    const fade = setInterval(() => {
-        v += 0.02;
-        ambient.volume = Math.min(v, 0.6);
-        if (v >= 0.6) clearInterval(fade);
-    }, 100);
+  ambient.volume = 0;
+  ambient.play();
+  let v = 0;
+  const fade = setInterval(() => {
+    v += 0.02;
+    ambient.volume = Math.min(v, 0.6);
+    if (v >= 0.6) clearInterval(fade);
+  }, 100);
 
-    startBtn.style.display = "none";
-    showNextLine();
+  startBtn.style.display = "none";
+  showNextLine();
 };
 
-/* ---------- APROXIMAÇÃO ---------- */
+/* ---------- APROXIMAÇÃO COM ZOOM ---------- */
 approachBtn.onclick = () => {
-    chest.style.transform = "scale(1.2)";
-    chest.style.transition = "transform 0.6s ease";
+  cofreImg.style.transform = "scale(1.15)";
+  cofreImg.style.opacity = "0.85";
 
-    setTimeout(() => {
-        darkRoom.style.opacity = 0;
-        darkRoom.style.pointerEvents = "none";
-        vault.style.opacity = 1;
-        vault.style.pointerEvents = "auto";
-    }, 700);
+  setTimeout(() => {
+    darkRoom.style.opacity = 0;
+    darkRoom.style.pointerEvents = "none";
+    vault.style.opacity = 1;
+    vault.style.pointerEvents = "auto";
+  }, 900);
 };
 
 /* ---------- TRAVA ---------- */
@@ -265,14 +259,41 @@ const dials = document.getElementById("dials");
 let values = [0,0,0,0,0];
 
 values.forEach((_, i) => {
-    const dial = document.createElement("div");
-    dial.className = "dial";
+  const dial = document.createElement("div");
+  dial.className = "dial";
 
-    const up = document.createElement("button");
-    up.innerText = "▲";
-    up.onclick = () => update(i, 1);
+  const up = document.createElement("button");
+  up.innerText = "▲";
+  up.onclick = () => update(i, 1);
 
-    const num = document.createElement("div");
+  const num = document.createElement("div");
+  num.className = "number";
+  num.innerText = "0";
+
+  const down = document.createElement("button");
+  down.innerText = "▼";
+  down.onclick = () => update(i, -1);
+
+  dial.appendChild(up);
+  dial.appendChild(num);
+  dial.appendChild(down);
+  dials.appendChild(dial);
+
+  dial.num = num;
+});
+
+function update(i, delta) {
+  values[i] = (values[i] + delta + 10) % 10;
+  dials.children[i].num.innerText = values[i];
+
+  if (values.every((v, idx) => v === PASSWORD[idx])) {
+    alert("O cofre reagiu...");
+  }
+}
+</script>
+
+</body>
+</html>v");
     num.className = "number";
     num.innerText = "0";
 
