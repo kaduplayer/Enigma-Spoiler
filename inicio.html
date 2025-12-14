@@ -19,6 +19,11 @@ html, body {
     overflow: hidden;
 }
 
+/* ESCONDE TUDO ATÉ CARREGAR */
+body {
+    visibility: hidden;
+}
+
 /* ---------- VINHETA ---------- */
 #vignette {
     position: fixed;
@@ -187,19 +192,16 @@ audio { display: none; }
 <audio id="sfx-tick" src="tick.mp3"></audio>
 <audio id="sfx-response" src="vault-response.mp3"></audio>
 
-<!-- PRÓLOGO -->
 <div id="intro">
     <div class="intro-text" id="text"></div>
     <button id="start-btn">Iniciar</button>
 </div>
 
-<!-- SALA -->
 <div id="dark-room">
     <img id="chest" src="cofre.png" alt="Cofre">
     <button id="approach-button">APROXIMAR-SE</button>
 </div>
 
-<!-- COFRE -->
 <div id="vault">
     <div class="dials" id="dials"></div>
     <div class="hint-container">
@@ -209,6 +211,10 @@ audio { display: none; }
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.style.visibility = "visible";
+});
+
 const textEl = document.getElementById("text");
 const intro = document.getElementById("intro");
 const startBtn = document.getElementById("start-btn");
@@ -228,7 +234,6 @@ ambient.volume = 0.6;
 sfxTick.volume = 0.4;
 sfxResponse.volume = 0.8;
 
-/* ---------- TEXTO ---------- */
 const lines = [
     "Algumas coisas não foram feitas para serem abertas de imediato.",
     "Elas esperam.",
@@ -267,9 +272,8 @@ function showNextLine() {
 
     textEl.style.opacity = 0;
     setTimeout(() => {
-        textEl.innerText = lines[index];
+        textEl.innerText = lines[index++];
         textEl.style.opacity = 1;
-        index++;
         setTimeout(showNextLine, 2600);
     }, 800);
 }
@@ -280,7 +284,6 @@ startBtn.onclick = () => {
     showNextLine();
 };
 
-/* ---------- APROXIMAÇÃO ---------- */
 approachBtn.onclick = () => {
     chest.style.transform = "translate(-50%, -50%) scale(1.5)";
     setTimeout(() => {
@@ -296,7 +299,6 @@ approachBtn.onclick = () => {
     }, 500);
 };
 
-/* ---------- TRAVA ---------- */
 const PASSWORD = [6,9,3,2,1];
 const dials = document.getElementById("dials");
 let values = [0,0,0,0,0];
@@ -352,9 +354,13 @@ function update(i, delta) {
     }
 }
 
-/* ---------- JORNADA ---------- */
 function startJourney() {
     window.location.href = "enigma3.html";
+}
+</script>
+
+</body>
+</html>tml";
 }
 </script>
 
