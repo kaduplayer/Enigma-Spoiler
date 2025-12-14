@@ -8,11 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 html,body{
     width:100%;
@@ -67,7 +63,7 @@ html,body{
     cursor:pointer;
 }
 
-/* ---------- SALA ESCURA ---------- */
+/* ---------- SALA ---------- */
 #dark-room{
     position:fixed;
     inset:0;
@@ -85,7 +81,7 @@ html,body{
     50%{opacity:0.97}
 }
 
-/* ---------- IMAGEM DO COFRE ---------- */
+/* ---------- COFRE ---------- */
 #chest{
     width:260px;
     position:absolute;
@@ -96,7 +92,6 @@ html,body{
     box-shadow:0 0 40px rgba(255,255,255,0.12);
 }
 
-/* ---------- BOTÃO ---------- */
 #approach-button{
     position:absolute;
     bottom:80px;
@@ -115,7 +110,7 @@ html,body{
     transition:opacity 1.2s ease;
 }
 
-/* ---------- COFRE ---------- */
+/* ---------- TELA DO COFRE ---------- */
 #vault{
     position:fixed;
     inset:0;
@@ -127,20 +122,12 @@ html,body{
     opacity:0;
     pointer-events:none;
     transition:opacity 1.5s ease;
-    animation:none;
 }
 
 /* ---------- TRANCAS ---------- */
-.dials{
-    display:flex;
-    gap:16px;
-}
+.dials{display:flex;gap:16px}
 
-.dial{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
+.dial{display:flex;flex-direction:column;align-items:center}
 
 .dial button{
     background:transparent;
@@ -156,9 +143,7 @@ html,body{
     transition:transform 0.2s ease,color 0.3s ease;
 }
 
-.correct{
-    color:#eee;
-}
+.correct{color:#eee}
 
 .hint{
     margin-top:30px;
@@ -167,6 +152,12 @@ html,body{
 }
 
 audio{display:none}
+
+/* ---------- RESPIRA ---------- */
+@keyframes pulse{
+    0%,100%{background-size:100% 100%}
+    50%{background-size:110% 110%}
+}
 </style>
 </head>
 
@@ -199,21 +190,21 @@ audio{display:none}
 </div>
 
 <script>
-const textEl = document.getElementById("text");
-const intro = document.getElementById("intro");
-const startBtn = document.getElementById("start-btn");
-const darkRoom = document.getElementById("dark-room");
-const approachBtn = document.getElementById("approach-button");
-const chest = document.getElementById("chest");
-const vault = document.getElementById("vault");
-const ambient = document.getElementById("ambient");
-const vignette = document.getElementById("vignette");
+const textEl=document.getElementById("text");
+const intro=document.getElementById("intro");
+const startBtn=document.getElementById("start-btn");
+const darkRoom=document.getElementById("dark-room");
+const approachBtn=document.getElementById("approach-button");
+const chest=document.getElementById("chest");
+const vault=document.getElementById("vault");
+const ambient=document.getElementById("ambient");
+const vignette=document.getElementById("vignette");
 
-const tick = document.getElementById("tick");
-const lock = document.getElementById("lock");
-const vaultSound = document.getElementById("vaultSound");
+const tick=document.getElementById("tick");
+const lock=document.getElementById("lock");
+const vaultSound=document.getElementById("vaultSound");
 
-const lines = [
+const lines=[
  "Algumas coisas não foram feitas para serem abertas de imediato.",
  "Elas esperam.",
  "Não por tempo...",
@@ -230,23 +221,23 @@ let index=0;
 
 function showNextLine(){
  if(index>=lines.length){
+  setTimeout(()=>{
+   intro.style.opacity=0;
    setTimeout(()=>{
-    intro.style.opacity=0;
+    intro.style.display="none";
+    darkRoom.style.display="block";
+    vignette.style.opacity=1;
     setTimeout(()=>{
-     intro.style.display="none";
-     darkRoom.style.display="block";
-     vignette.style.opacity=1;
+     darkRoom.style.opacity=1;
+     darkRoom.style.pointerEvents="auto";
      setTimeout(()=>{
-      darkRoom.style.opacity=1;
-      darkRoom.style.pointerEvents="auto";
-      setTimeout(()=>{
-       approachBtn.style.opacity=1;
-       approachBtn.style.pointerEvents="auto";
-      },2000);
-     },50);
-    },1500);
-   },2000);
-   return;
+      approachBtn.style.opacity=1;
+      approachBtn.style.pointerEvents="auto";
+     },2000);
+    },50);
+   },1500);
+  },2000);
+  return;
  }
  textEl.style.opacity=0;
  setTimeout(()=>{
@@ -256,19 +247,28 @@ function showNextLine(){
  },800);
 }
 
+/* ---------- MOBILE SAFE ---------- */
 startBtn.onclick=()=>{
- ambient.volume=0;
- ambient.play();
- let v=0;
- const fade=setInterval(()=>{
-  v+=0.02;
-  ambient.volume=Math.min(v,0.6);
-  if(v>=0.6) clearInterval(fade);
- },100);
  startBtn.style.display="none";
  showNextLine();
+
+ try{
+  ambient.volume=0;
+  const p=ambient.play();
+  if(p!==undefined){
+   p.then(()=>{
+    let v=0;
+    const fade=setInterval(()=>{
+     v+=0.02;
+     ambient.volume=Math.min(v,0.6);
+     if(v>=0.6) clearInterval(fade);
+    },100);
+   });
+  }
+ }catch(e){}
 };
 
+/* ---------- APROXIMAR ---------- */
 approachBtn.onclick=()=>{
  chest.style.transform="translate(-50%,-50%) scale(1.45)";
  setTimeout(()=>{
@@ -339,13 +339,11 @@ function update(i,delta){
   vignette.style.opacity=0.4;
  }
 }
+</script>
 
-/* ---------- RESPIRAÇÃO ---------- */
-const style=document.createElement("style");
-style.innerHTML=`
-@keyframes pulse{
- 0%,100%{background-size:100% 100%}
- 50%{background-size:110% 110%}
+</body>
+</html>
+nd-size:110% 110%}
 }`;
 document.head.appendChild(style);
 </script>
