@@ -120,24 +120,44 @@ input {
     opacity: 0;
     transition: opacity 2s ease;
     z-index: 80;
+    color: white;
+    text-align: center;
 }
 
 .final-text {
-    color: white;
     font-size: 1.4rem;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     opacity: 0;
     transition: opacity 2s ease;
 }
 
-.digit-reveal {
+.reveal-label {
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    color: #aaa;
+    margin-bottom: 10px;
     opacity: 0;
     transition: opacity 2s ease;
 }
 
 .number-6 {
     font-size: 8rem;
+    font-weight: 300;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+.next-btn {
+    margin-top: 40px;
+    padding: 14px 36px;
+    border: 1px solid white;
+    background: transparent;
     color: white;
+    font-size: 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 2s ease;
 }
 </style>
 </head>
@@ -175,9 +195,9 @@ input {
 <!-- FINAL -->
 <div id="final-sequence">
     <p class="final-text" id="end-phrase">Foi ali que tudo começou.</p>
-    <div class="digit-reveal" id="digit-box">
-        <span class="number-6">6</span>
-    </div>
+    <div class="reveal-label" id="reveal-label">DÍGITO REVELADO</div>
+    <div class="number-6" id="digit">6</div>
+    <button class="next-btn" id="next-btn" onclick="goNext()">Continuar</button>
 </div>
 
 <script>
@@ -254,10 +274,19 @@ function success() {
     document.getElementById('ui-box').style.opacity = 0;
 
     setTimeout(() => {
-        document.getElementById('final-sequence').style.opacity = 1;
-        setTimeout(() => document.getElementById('end-phrase').style.opacity = 1, 1000);
-        setTimeout(() => document.getElementById('digit-box').style.opacity = 1, 3000);
+        const final = document.getElementById('final-sequence');
+        final.style.opacity = 1;
+
+        setTimeout(() => document.getElementById('end-phrase').style.opacity = 1, 800);
+        setTimeout(() => document.getElementById('reveal-label').style.opacity = 1, 2000);
+        setTimeout(() => document.getElementById('digit').style.opacity = 1, 3200);
+        setTimeout(() => document.getElementById('next-btn').style.opacity = 1, 4500);
     }, 2000);
+}
+
+/* PRÓXIMO ENIGMA */
+function goNext() {
+    window.location.href = "index.html";
 }
 </script>
 
