@@ -93,8 +93,6 @@ video {
 .question {
     font-size: 1.4rem;
     margin-bottom: 20px;
-    opacity: 0;
-    transition: opacity 1.5s ease;
 }
 
 input {
@@ -104,8 +102,6 @@ input {
     font-size: 1.1rem;
     text-align: center;
     outline: none;
-    opacity: 0;
-    transition: opacity 1.5s ease, transform 0.1s ease;
 }
 
 /* FINAL */
@@ -113,42 +109,28 @@ input {
     position: fixed;
     inset: 0;
     background: black;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    opacity: 0;
-    transition: opacity 2s ease;
     z-index: 80;
     color: white;
     text-align: center;
 }
 
-.final-text {
-    font-size: 1.4rem;
-    margin-bottom: 30px;
-    opacity: 0;
-    transition: opacity 2s ease;
-}
-
 .reveal-label {
     font-size: 0.9rem;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     color: #aaa;
     margin-bottom: 10px;
-    opacity: 0;
-    transition: opacity 2s ease;
 }
 
 .number-6 {
     font-size: 8rem;
-    font-weight: 300;
-    opacity: 0;
-    transition: opacity 2s ease;
+    margin-bottom: 40px;
 }
 
 .next-btn {
-    margin-top: 40px;
     padding: 14px 36px;
     border: 1px solid white;
     background: transparent;
@@ -156,17 +138,11 @@ input {
     font-size: 1rem;
     border-radius: 30px;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 2s ease;
 }
 </style>
 </head>
 
 <body>
-
-<!-- SONS -->
-<audio id="ambient-sound" src="ambient.mp3" loop></audio>
-<audio id="video-sound" src="video-sound.mp3"></audio>
 
 <!-- INTRO -->
 <div id="start-overlay">
@@ -187,70 +163,48 @@ input {
 <!-- JOGO -->
 <div id="game-container">
     <div class="ui-layer" id="ui-box">
-        <h2 class="question" id="question">Qual foi o começo?</h2>
+        <h2 class="question">Qual foi o começo?</h2>
         <input type="text" id="answer-input" placeholder="Digite..." autocomplete="off">
     </div>
 </div>
 
 <!-- FINAL -->
 <div id="final-sequence">
-    <p class="final-text" id="end-phrase">Foi ali que tudo começou.</p>
-    <div class="reveal-label" id="reveal-label">DÍGITO REVELADO</div>
-    <div class="number-6" id="digit">6</div>
-    <button class="next-btn" id="next-btn" onclick="goNext()">Continuar</button>
+    <div class="reveal-label">DÍGITO REVELADO</div>
+    <div class="number-6">6</div>
+    <button class="next-btn" onclick="goNext()">Continuar</button>
 </div>
 
 <script>
 const introText = document.getElementById('intro-text');
 const startBtn = document.querySelector('.start-btn');
-const ambient = document.getElementById('ambient-sound');
-const videoSound = document.getElementById('video-sound');
 const video = document.getElementById('intro-video');
 const videoContainer = document.getElementById('video-container');
 const overlay = document.getElementById('start-overlay');
 const game = document.getElementById('game-container');
-
-const question = document.getElementById('question');
 const input = document.getElementById('answer-input');
+const finalScreen = document.getElementById('final-sequence');
 
 /* INTRO */
 window.onload = () => {
-    ambient.volume = 0.3;
-    ambient.play();
-
     setTimeout(() => introText.style.opacity = 1, 500);
-    setTimeout(() => startBtn.style.opacity = 1, 3000);
+    setTimeout(() => startBtn.style.opacity = 1, 2500);
 };
 
 function startExperience() {
-    ambient.pause();
-    videoSound.play();
     video.play();
-
     videoContainer.style.opacity = 1;
-    videoContainer.style.pointerEvents = 'auto';
     overlay.style.opacity = 0;
-
     setTimeout(() => overlay.style.display = 'none', 1000);
 }
 
 /* VÍDEO → JOGO */
 video.onended = () => {
-    videoSound.pause();
-    ambient.play();
-
     videoContainer.style.opacity = 0;
-
     setTimeout(() => {
         videoContainer.style.display = 'none';
         game.style.opacity = 1;
-
-        setTimeout(() => {
-            question.style.opacity = 1;
-            input.style.opacity = 1;
-            input.focus();
-        }, 1200);
-
+        input.focus();
     }, 1000);
 };
 
@@ -270,23 +224,22 @@ function shake() {
     setTimeout(() => input.style.transform = 'translateX(0)', 120);
 }
 
+/* SUCESSO */
 function success() {
-    document.getElementById('ui-box').style.opacity = 0;
+    // salva progresso
+    localStorage.setItem("digito1", "6");
+
+    game.style.opacity = 0;
 
     setTimeout(() => {
-        const final = document.getElementById('final-sequence');
-        final.style.opacity = 1;
-
-        setTimeout(() => document.getElementById('end-phrase').style.opacity = 1, 800);
-        setTimeout(() => document.getElementById('reveal-label').style.opacity = 1, 2000);
-        setTimeout(() => document.getElementById('digit').style.opacity = 1, 3200);
-        setTimeout(() => document.getElementById('next-btn').style.opacity = 1, 4500);
-    }, 2000);
+        game.style.display = 'none';
+        finalScreen.style.display = 'flex';
+    }, 1500);
 }
 
 /* PRÓXIMO ENIGMA */
 function goNext() {
-    window.location.href = "index.html";
+    window.location.href = "enigma2.html";
 }
 </script>
 
