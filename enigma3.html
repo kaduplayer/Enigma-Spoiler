@@ -2,17 +2,13 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>O Começo</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
     width: 100%;
@@ -22,7 +18,7 @@ html, body {
     overflow: hidden;
 }
 
-/* ---------- INTRO ---------- */
+/* INTRO */
 #start-overlay {
     position: fixed;
     inset: 0;
@@ -32,7 +28,6 @@ html, body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: opacity 1s ease;
 }
 
 .intro-text {
@@ -58,7 +53,7 @@ html, body {
     transition: opacity 1.5s ease;
 }
 
-/* ---------- VÍDEO ---------- */
+/* VIDEO */
 #video-container {
     position: fixed;
     inset: 0;
@@ -75,7 +70,7 @@ video {
     object-fit: contain;
 }
 
-/* ---------- JOGO ---------- */
+/* GAME */
 #game-container {
     position: fixed;
     inset: 0;
@@ -117,7 +112,7 @@ input {
     transition: opacity 1.5s ease;
 }
 
-/* ---------- FINAL ---------- */
+/* FINAL */
 #final-sequence {
     position: fixed;
     inset: 0;
@@ -140,19 +135,15 @@ input {
     transition: opacity 2s ease;
 }
 
-.digit-reveal {
-    opacity: 0;
-    transition: opacity 2s ease;
-}
-
 .number {
     font-size: 8rem;
     font-weight: 300;
     color: white;
     text-shadow: 0 0 30px rgba(255,255,255,0.7);
+    opacity: 0;
+    transition: opacity 2s ease;
 }
 
-/* ---------- ÁUDIO ---------- */
 audio { display: none; }
 </style>
 </head>
@@ -172,14 +163,14 @@ audio { display: none; }
     <button class="start-btn" id="start-btn">Iniciar Memória</button>
 </div>
 
-<!-- VÍDEO -->
+<!-- VIDEO -->
 <div id="video-container">
     <video id="intro-video" playsinline>
         <source src="video_intro.mp4" type="video/mp4">
     </video>
 </div>
 
-<!-- JOGO -->
+<!-- GAME -->
 <div id="game-container">
     <div class="ui-layer">
         <div class="question" id="question">Qual foi o começo?</div>
@@ -190,22 +181,19 @@ audio { display: none; }
 <!-- FINAL -->
 <div id="final-sequence">
     <div class="final-text" id="final-text">Foi ali que tudo começou.</div>
-    <div class="digit-reveal" id="digit">
-        <div class="number">6</div>
-    </div>
+    <div class="number" id="digit">6</div>
 </div>
 
 <script>
 const ambient = document.getElementById("ambient");
 const melody = document.getElementById("melody");
+const video = document.getElementById("intro-video");
 
 const introText = document.getElementById("intro-text");
 const startBtn = document.getElementById("start-btn");
 const overlay = document.getElementById("start-overlay");
 
 const videoContainer = document.getElementById("video-container");
-const video = document.getElementById("intro-video");
-
 const game = document.getElementById("game-container");
 const question = document.getElementById("question");
 const input = document.getElementById("answer");
@@ -219,31 +207,28 @@ setTimeout(() => introText.style.opacity = 1, 800);
 setTimeout(() => startBtn.style.opacity = 1, 2800);
 
 startBtn.onclick = () => {
-    ambient.volume = 0.6;
-    ambient.play();
-
-    overlay.style.opacity = 0;
-    setTimeout(() => overlay.style.display = "none", 1000);
+    overlay.style.display = "none";
 
     videoContainer.style.opacity = 1;
     videoContainer.style.pointerEvents = "auto";
 
-    ambient.volume = 0.2;
+    melody.volume = 0.8;
     melody.play();
     video.play();
 };
 
-/* FIM DO VÍDEO */
+/* VIDEO END */
 video.onended = () => {
     melody.pause();
+
     videoContainer.style.opacity = 0;
 
     setTimeout(() => {
-        ambient.volume = 0.4;
-    }, 2500);
-
-    setTimeout(() => {
         videoContainer.style.display = "none";
+
+        ambient.volume = 0.4;
+        ambient.play();
+
         game.style.opacity = 1;
         game.style.pointerEvents = "auto";
 
@@ -253,17 +238,31 @@ video.onended = () => {
             input.focus();
         }, 1200);
 
-    }, 3000);
+    }, 2500);
 };
 
-/* RESPOSTA */
+/* ANSWER */
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") {
         if (input.value.trim().toLowerCase() === "senai") {
-            success();
+            game.style.opacity = 0;
+
+            setTimeout(() => {
+                finalSeq.style.opacity = 1;
+                finalText.style.opacity = 1;
+                setTimeout(() => digit.style.opacity = 1, 2000);
+            }, 2000);
         } else {
             input.style.transform = "translateX(6px)";
             setTimeout(() => input.style.transform = "translateX(-6px)", 60);
+            setTimeout(() => input.style.transform = "translateX(0)", 120);
+        }
+    }
+});
+</script>
+
+</body>
+</html>form = "translateX(-6px)", 60);
             setTimeout(() => input.style.transform = "translateX(0)", 120);
         }
     }
