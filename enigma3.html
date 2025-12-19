@@ -150,7 +150,7 @@ audio { display: none; }
 
 <body>
 
-<audio id="ambient" src="ambiente.mp3" loop></audio>
+<!-- ÁUDIO DO VÍDEO (MANTIDO) -->
 <audio id="melody" src="melodia-video.mp3"></audio>
 
 <!-- INTRO -->
@@ -185,7 +185,6 @@ audio { display: none; }
 </div>
 
 <script>
-const ambient = document.getElementById("ambient");
 const melody = document.getElementById("melody");
 const video = document.getElementById("intro-video");
 
@@ -226,9 +225,6 @@ video.onended = () => {
     setTimeout(() => {
         videoContainer.style.display = "none";
 
-        ambient.volume = 0.4;
-        ambient.play();
-
         game.style.opacity = 1;
         game.style.pointerEvents = "auto";
 
@@ -255,6 +251,14 @@ input.addEventListener("keydown", e => {
         } else {
             input.style.transform = "translateX(6px)";
             setTimeout(() => input.style.transform = "translateX(-6px)", 60);
+            setTimeout(() => input.style.transform = "translateX(0)", 120);
+        }
+    }
+});
+</script>
+
+</body>
+</html>;
             setTimeout(() => input.style.transform = "translateX(0)", 120);
         }
     }
