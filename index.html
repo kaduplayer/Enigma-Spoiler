@@ -26,7 +26,7 @@
             max-height: 100vh;
             background: url('fundo.jpg') no-repeat center center;
             background-size: contain; 
-            transition: filter 1.5s ease-in-out, opacity 1.5s ease-in-out; /* Transição suave */
+            transition: filter 1.5s ease-in-out, opacity 1.5s ease-in-out;
         }
 
         @media (max-aspect-ratio: 16/9) {
@@ -43,18 +43,12 @@
             position: absolute;
             cursor: pointer;
             pointer-events: auto;
-            opacity: 0; /* INVISÍVEL */
+            opacity: 0;
             z-index: 20;
         }
 
-        /* === POSIÇÕES === */
-        #rooster-spot {
-            top: 38%; left: 12%; width: 18%; height: 28%;
-        }
-
-        #duck-spot {
-            top: 40%; right: 12%; width: 18%; height: 28%;
-        }
+        #rooster-spot { top: 38%; left: 12%; width: 18%; height: 28%; }
+        #duck-spot { top: 40%; right: 12%; width: 18%; height: 28%; }
 
         /* === INTERFACE (UI) === */
         .ui-layer {
@@ -64,7 +58,6 @@
             pointer-events: none; text-align: center;
         }
 
-        /* O Título agora serve só de espaço, nunca aparece */
         h1.spoiler-title {
             font-size: 5vw; 
             margin-bottom: 2rem; opacity: 0; pointer-events: none;
@@ -99,6 +92,34 @@
         .digit-reveal.show { opacity: 1; transform: scale(1); }
         .label-unlock { font-size: 0.8rem; color: #666; letter-spacing: 4px; text-transform: uppercase; }
 
+        /* NOVO: Botão Próximo */
+        .btn-next {
+            margin-top: 40px;
+            padding: 12px 40px;
+            background: transparent;
+            border: 1px solid #ffffff44;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.8s ease;
+            pointer-events: none;
+        }
+
+        .btn-next.show {
+            opacity: 1;
+            pointer-events: auto;
+            border-color: #fff;
+        }
+
+        .btn-next:hover {
+            background: #fff;
+            color: #000;
+        }
+
     </style>
 </head>
 <body>
@@ -120,6 +141,8 @@
         <div class="final-text">Primeiras conversas guardam os melhores segredos.</div>
         <div class="label-unlock">Dígito Desbloqueado</div>
         <div class="digit-reveal" id="final-digit">9</div>
+        
+        <button class="btn-next" id="next-btn" onclick="goToNextEnigma()">Próximo</button>
     </div>
 
     <script>
@@ -127,7 +150,6 @@
         let duckCaught = false;
 
         function flashSpot(element) {
-            // Flash branco sutil
             element.style.opacity = 1;
             element.style.backgroundColor = "rgba(255, 255, 255, 0.3)"; 
             setTimeout(() => { 
@@ -162,46 +184,48 @@
             const container = document.getElementById('game-container');
             const ui = document.getElementById('game-ui');
             const endScreen = document.getElementById('end-screen');
+            const nextBtn = document.getElementById('next-btn');
 
-            // 1. Inicia o escurecimento da tela (sem piscar texto)
+            // 1. Escurece o fundo
             setTimeout(() => {
                 container.style.filter = "grayscale(100%) brightness(0%)";
-                ui.style.opacity = 0; // Interface some suavemente
-                
-                // Desativa cliques para não atrapalhar
+                ui.style.opacity = 0;
                 document.getElementById('rooster-spot').style.display = 'none';
                 document.getElementById('duck-spot').style.display = 'none';
             }, 500);
 
-            // 2. Aparece a tela final
+            // 2. Aparece a tela preta final
             setTimeout(() => {
                 endScreen.style.opacity = 1;
                 endScreen.style.pointerEvents = "auto";
             }, 2000);
 
-            // 3. Revela o número
+            // 3. Revela o dígito
             setTimeout(() => {
                 document.getElementById('final-digit').classList.add('show');
             }, 3500);
+
+            // 4. Revela o botão de próximo
+            setTimeout(() => {
+                nextBtn.classList.add('show');
+            }, 4800);
         }
 
-        // LÓGICA DE TEXTO (ORIGINAL)
+        function goToNextEnigma() {
+            // Mude o nome abaixo para o arquivo do seu próximo nível
+            window.location.href = 'enigma2.html';
+        }
+
         const input = document.getElementById('spoiler-input');
         const feedback = document.getElementById('feedback');
         
         input.addEventListener('keyup', (e) => {
             if (e.key === 'Enter' || e.target.value.length > 0) {
                 const val = input.value.toLowerCase().trim();
-                
                 if (window.feedbackTimeout) clearTimeout(window.feedbackTimeout);
-
-                if (val === '') {
-                    feedback.style.opacity = 0;
-                    return;
-                }
+                if (val === '') { feedback.style.opacity = 0; return; }
 
                 feedback.style.opacity = 1;
-
                 if (val.includes('galo') && val.includes('pato')) {
                     feedback.innerText = "Boa tentativa... mas spoilers não se derrotam só escrevendo.";
                 } else if (val.includes('galo')) {
@@ -212,9 +236,7 @@
                     feedback.innerText = "Não adianta... fugir do spoiler nunca funciona.";
                 }
 
-                window.feedbackTimeout = setTimeout(() => {
-                    feedback.style.opacity = 0;
-                }, 4000);
+                window.feedbackTimeout = setTimeout(() => { feedback.style.opacity = 0; }, 4000);
             }
         });
     </script>
