@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragmento</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: black;
+    color: white;
+    overflow: hidden;
+}
+
+/* TEXTO INICIAL */
+#intro {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+/* JOGO */
+#game {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+/* SÍMBOLOS */
+.symbols {
+    display: flex;
+    gap: 40px;
+}
+
+.symbol {
+    width: 70px;
+    height: 70px;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, border-color 0.2s;
+}
+
+.symbol:hover {
+    transform: scale(1.1);
+}
+
+.symbol::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+}
+
+/* PROGRESSO */
+.progress {
+    display: flex;
+    gap: 12px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #333;
+    transition: background 0.3s;
+}
+
+.dot.active {
+    background: #f1c40f;
+}
+
+.dot.success {
+    background: #2ecc71;
+}
+
+/* FINAL */
+#final {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+.final-text {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: #aaa;
+}
+
+.digit {
+    font-size: 6rem;
+}
+
+/* BOTÃO */
+button {
+    padding: 12px 30px;
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    border-radius: 30px;
+    cursor: pointer;
+    letter-spacing: 2px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SONS -->
+<audio id="sfx-click" src="click.mp3"></audio>
+<audio id="sfx-error" src="error.mp3"></audio>
+<audio id="sfx-success" src="success.mp3"></audio>
+
+<!-- INTRO -->
+<div id="intro">
+    Nem tudo é rápido,<br>
+    e acontece na mesma hora.<br><br>
+    Algumas coisas pedem<br>
+    sequência.
+</div>
+
+<!-- JOGO -->
+<div id="game">
+    <div class="symbols">
+        <div class="symbol" data-id="0"></div>
+        <div class="symbol" data-id="1"></div>
+        <div class="symbol" data-id="2"></div>
+        <div class="symbol" data-id="3"></div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+</div>
+
+<!-- FINAL -->
+<div id="final">
+    <div class="final-text">DÍGITO REVELADO</div>
+    <div class="digit">3</div>
+    <button onclick="next()">Continuar</button>
+</div>
+
+<script>
+const intro = document.getElementById('intro');
+const game = document.getElementById('game');
+const finalScreen = document.getElementById('final');
+
+const clickSound = document.getElementById('sfx-click');
+const errorSound = document.getElementById('sfx-error');
+const successSound = document.getElementById('sfx-success');
+
+const symbols = document.querySelectorAll('.symbol');
+const progressBox = document.getElementById('progress');
+
+let sequence = [];
+let input = [];
+const length = 4;
+
+/* INTRO */
+setTimeout(() => intro.style.opacity = 1, 500);
+setTimeout(() => {
+    intro.style.opacity = 0;
+    setTimeout(() => {
+        intro.style.display = 'none';
+        game.style.display = 'flex';
+        startGame();
+    }, 2000);
+}, 5000);
+
+/* JOGO */
+function startGame() {
+    sequence = shuffle([0,1,2,3]).slice(0, length);
+    input = [];
+    progressBox.innerHTML = '';
+
+    for (let i = 0; i < length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        progressBox.appendChild(dot);
+    }
+}
+
+symbols.forEach(sym => {
+    sym.onclick = () => handleInput(Number(sym.dataset.id));
+});
+
+function handleInput(id) {
+    clickSound.currentTime = 0;
+    clickSound.play();
+
+    const index = input.length;
+
+    if (id === sequence[index]) {
+        input.push(id);
+        progressBox.children[index].classList.add('active');
+
+        if (input.length === length) {
+            success();
+        }
+    } else {
+        errorSound.play();
+        reset();
+    }
+}
+
+function reset() {
+    input = [];
+    [...progressBox.children].forEach(dot => dot.className = 'dot');
+}
+
+function success() {
+    successSound.play();
+    [...progressBox.children].forEach(dot => dot.className = 'dot success');
+
+    localStorage.setItem('digit_2', '3');
+
+    setTimeout(() => {
+        game.style.display = 'none';
+        finalScreen.style.display = 'flex';
+        setTimeout(() => finalScreen.style.opacity = 1, 50);
+    }, 1500);
+}
+
+function next() {
+    window.location.href = "enigma3.html";
+}
+
+function shuffle(arr) {
+    return arr.sort(() => Math.random() - 0.5);
+}
+</script>
+
+</body>
+</html>
