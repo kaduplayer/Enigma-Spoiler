@@ -13,40 +13,53 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        #status-bar {
-            position: absolute; top: 20px; width: 100%; text-align: center;
-            letter-spacing: 2px; font-size: 0.7rem; opacity: 0.6;
+        /* --- INTRODUÇÃO CONTEMPLATIVA --- */
+        #intro-overlay {
+            position: fixed; inset: 0; background: #050505; z-index: 200;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px; text-align: center; transition: opacity 2.5s ease;
         }
 
-        #game { display: none; flex-direction: column; align-items: center; gap: 30px; z-index: 10; width: 90%; }
+        .intro-text {
+            font-size: 1.1rem; line-height: 1.6; color: #00ff41;
+            max-width: 80%; position: absolute; /* Garante que todas aparecem no mesmo local */
+            opacity: 0; transition: opacity 1.5s ease;
+            letter-spacing: 1px; font-weight: 300;
+        }
 
-        .progress-info { text-align: center; margin-bottom: 10px; }
-        .level-text { font-size: 1.2rem; color: #fff; text-shadow: 0 0 10px #00ff41; }
+        #start-btn {
+            padding: 15px 35px; background: transparent;
+            border: 1px solid rgba(0, 255, 65, 0.4); color: #00ff41;
+            cursor: pointer; text-transform: uppercase; font-family: 'Space Mono';
+            letter-spacing: 4px; font-size: 0.8rem;
+            opacity: 0; transition: all 2s ease;
+            display: none; z-index: 210;
+        }
+        #start-btn:hover { border-color: #00ff41; background: rgba(0, 255, 65, 0.05); }
 
-        /* Grade de Símbolos */
+        /* --- ELEMENTOS DO JOGO --- */
+        #status-bar {
+            position: absolute; top: 20px; width: 100%; text-align: center;
+            letter-spacing: 2px; font-size: 0.7rem; opacity: 0.4;
+        }
+
+        #game { display: none; flex-direction: column; align-items: center; gap: 30px; z-index: 10; width: 90%; opacity: 0; transition: opacity 2s ease; }
+        .level-text { font-size: 1rem; color: #fff; opacity: 0.6; margin-bottom: 20px; }
+        
         .symbols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         
         .symbol {
-            width: 85px; height: 85px; border: 2px solid #00ff41; border-radius: 50%;
+            width: 85px; height: 85px; border: 1px solid #00ff41; border-radius: 50%;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; transition: all 0.2s; background: rgba(0, 255, 65, 0.05);
+            font-size: 1.8rem; transition: all 0.2s; background: rgba(0, 255, 65, 0.02);
             user-select: none;
         }
+        .symbol.flash { background: #00ff41; color: #000; box-shadow: 0 0 30px #00ff41; }
 
-        /* Efeito de flash (diminui nos níveis finais) */
-        .symbol.flash { background: #00ff41; color: #000; box-shadow: 0 0 30px #00ff41; border-color: #fff; }
-
-        /* TELA FINAL */
-        #final { display: none; flex-direction: column; align-items: center; text-align: center; gap: 20px; animation: fadeIn 2s; }
+        /* --- TELA FINAL --- */
+        #final { display: none; flex-direction: column; align-items: center; text-align: center; gap: 20px; animation: fadeIn 2s forwards; }
         .digit { font-size: 7rem; font-weight: bold; color: #fff; text-shadow: 0 0 25px #00ff41; }
         
-        button {
-            padding: 15px 40px; background: transparent; border: 1px solid #00ff41;
-            color: #00ff41; font-family: 'Space Mono'; cursor: pointer; text-transform: uppercase;
-            border-radius: 5px;
-        }
-        button:active { background: #00ff41; color: #000; }
-
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
         .shake { animation: shake 0.3s ease-in-out; }
@@ -54,14 +67,19 @@
 </head>
 <body>
 
-    <div id="status-bar">FRAGMENTO_MEMORIA_M4: <span id="sync-status">ESTÁVEL</span></div>
+    <div id="intro-overlay">
+        <p class="intro-text" id="t1">Nem tudo acontece na mesma hora.</p>
+        <p class="intro-text" id="t2">O tempo também responde.</p>
+        <p class="intro-text" id="t3">Escutar é diferente de ouvir.</p>
+        <p class="intro-text" id="t4">Sincronizar exige paciência.</p>
+        <p class="intro-text" id="t5">O silêncio faz parte da frequência.</p>
+        <button id="start-btn" onclick="beginSychronization()">Sincronizar</button>
+    </div>
+
+    <div id="status-bar">PROTOCOLO_ECO // ESTÁGIO_04</div>
 
     <div id="game">
-        <div class="progress-info">
-            <div class="level-text">ESTÁGIO <span id="level-num">1</span>/5</div>
-            <p style="font-size: 0.8rem; margin-top: 5px;">Memorize a sequência...</p>
-        </div>
-        
+        <div class="level-text">SINCRONIA: <span id="level-num">1</span>/5</div>
         <div class="symbols">
             <div class="symbol" data-id="0" data-freq="261">Δ</div>
             <div class="symbol" data-id="1" data-freq="329">Ω</div>
@@ -71,20 +89,70 @@
     </div>
 
     <div id="final">
-        <p style="letter-spacing: 2px;">SINCRONIA COMPLETA</p>
+        <p style="letter-spacing: 2px; opacity: 0.6;">DÍGITO RECUPERADO</p>
         <div class="digit">3</div>
-        <p style="font-size: 0.8rem; margin-bottom: 20px;">O segundo dígito foi recuperado.</p>
-        <button onclick="window.location.href='index.html'">Finalizar Protocolo</button>
+        <button onclick="window.location.href='index.html'">Finalizar</button>
     </div>
 
     <script>
+        // --- LÓGICA DA INTRODUÇÃO CORRIGIDA ---
+        const timeline = [
+            { id: 't1', duration: 4000 }, 
+            { id: null, duration: 1000 },
+            { id: 't2', duration: 4000 },
+            { id: null, duration: 1000 },
+            { id: 't3', duration: 4000 },
+            { id: null, duration: 1000 },
+            { id: 't4', duration: 4000 },
+            { id: null, duration: 1000 },
+            { id: 't5', duration: 5000 }
+        ];
+
+        let currentTime = 500;
+
+        timeline.forEach((step) => {
+            if (step.id) {
+                // Aparece o texto
+                setTimeout(() => {
+                    document.getElementById(step.id).style.opacity = "1";
+                }, currentTime);
+
+                // Desaparece o texto (Fade Out) antes do próximo começar
+                setTimeout(() => {
+                    document.getElementById(step.id).style.opacity = "0";
+                }, currentTime + step.duration - 1000);
+            }
+            currentTime += step.duration;
+        });
+
+        // Mostra o botão após o silêncio final
+        setTimeout(() => {
+            const btn = document.getElementById('start-btn');
+            btn.style.display = "block";
+            setTimeout(() => btn.style.opacity = "1", 100);
+        }, currentTime);
+
+        function beginSychronization() {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            
+            document.getElementById('intro-overlay').style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('intro-overlay').style.display = 'none';
+                const gameArea = document.getElementById('game');
+                gameArea.style.display = 'flex';
+                setTimeout(() => gameArea.style.opacity = '1', 100);
+                startLevel();
+            }, 2500);
+        }
+
+        // --- LÓGICA DO JOGO ---
         let sequence = [];
         let userInput = [];
         let currentLevel = 1;
         const maxLevel = 5;
-
-        // Gerador de Áudio (Notas musicais limpas)
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
         function playNote(freq) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -93,44 +161,28 @@
             gain.connect(audioCtx.destination);
             osc.frequency.value = freq;
             gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+            gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.05);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.5);
         }
 
-        const gameDiv = document.getElementById('game');
-        const levelSpan = document.getElementById('level-num');
-        const syncStatus = document.getElementById('sync-status');
-
-        // Início automático após breve delay
-        setTimeout(() => {
-            gameDiv.style.display = 'flex';
-            startLevel();
-        }, 2000);
-
         function startLevel() {
             userInput = [];
-            levelSpan.innerText = currentLevel;
-            
-            // Dificuldade crescente: Nível 1 (3 notas) -> Nível 5 (7 notas)
+            document.getElementById('level-num').innerText = currentLevel;
             const length = currentLevel + 2;
             sequence = Array.from({length: length}, () => Math.floor(Math.random() * 4));
-            
-            if(currentLevel >= 4) syncStatus.innerText = "INSTÁVEL - FOCO NO SOM";
-            
-            setTimeout(playSequence, 1000);
+            setTimeout(playSequence, 1500);
         }
 
         async function playSequence() {
-            gameDiv.style.pointerEvents = 'none';
+            document.getElementById('game').style.pointerEvents = 'none';
             for (let id of sequence) {
-                await new Promise(r => setTimeout(r, 600));
+                await new Promise(r => setTimeout(r, 800));
                 const el = document.querySelector(`[data-id="${id}"]`);
-                
                 playNote(el.dataset.freq);
                 
-                // No nível 4 e 5, o brilho visual some! Ela terá que usar o ouvido.
+                // No nível 4 e 5, o brilho visual é removido (dificuldade sonora)
                 if (currentLevel < 4) {
                     el.classList.add('flash');
                     setTimeout(() => el.classList.remove('flash'), 400);
@@ -139,18 +191,15 @@
                     setTimeout(() => el.style.borderColor = "#00ff41", 400);
                 }
             }
-            gameDiv.style.pointerEvents = 'all';
+            document.getElementById('game').style.pointerEvents = 'all';
         }
 
         document.querySelectorAll('.symbol').forEach(btn => {
             btn.addEventListener('click', () => {
-                if(audioCtx.state === 'suspended') audioCtx.resume();
-                
                 const id = Number(btn.dataset.id);
                 playNote(btn.dataset.freq);
                 btn.classList.add('flash');
                 setTimeout(() => btn.classList.remove('flash'), 250);
-                
                 handleInput(id);
             });
         });
@@ -163,11 +212,9 @@
                     else { currentLevel++; setTimeout(startLevel, 1000); }
                 }
             } else {
-                // Errou? Volta pro nível 1 para dar aquele "desespero" engraçado
-                gameDiv.classList.add('shake');
-                syncStatus.innerText = "ERRO DE SINCRONIA - REINICIANDO";
+                document.getElementById('game').classList.add('shake');
                 setTimeout(() => {
-                    gameDiv.classList.remove('shake');
+                    document.getElementById('game').classList.remove('shake');
                     currentLevel = 1;
                     startLevel();
                 }, 600);
@@ -175,10 +222,10 @@
         }
 
         function win() {
-            gameDiv.style.display = 'none';
-            const final = document.getElementById('final');
-            final.style.display = 'flex';
-            localStorage.setItem('enigma4_concluido', 'true');
+            document.getElementById('game').style.display = 'none';
+            document.getElementById('final').style.display = 'flex';
+            // Guardamos o dígito no localStorage para o cofre
+            localStorage.setItem('digit_enigma4', '3');
         }
     </script>
 </body>
