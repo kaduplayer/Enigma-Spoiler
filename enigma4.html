@@ -1,264 +1,321 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fragmento</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fragmento - Sistema de Segurança</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Remove o brilho azul ao tocar no celular */
+        }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    font-family: 'Montserrat', sans-serif;
-    background: black;
-    color: white;
-    overflow: hidden;
-}
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Space Mono', monospace;
+            background: #050505;
+            color: #00ff41;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-/* TEXTO INICIAL */
-#intro {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px;
-    font-size: 1.2rem;
-    line-height: 1.6;
-    opacity: 0;
-    transition: opacity 2s ease;
-}
+        /* Efeito de Overlay de Terminal */
+        body::after {
+            content: " ";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
 
-/* JOGO */
-#game {
-    position: fixed;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-}
+        /* INTRODUÇÃO */
+        #intro {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            line-height: 1.6;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            z-index: 50;
+        }
 
-/* SÍMBOLOS */
-.symbols {
-    display: flex;
-    gap: 40px;
-}
+        /* CONTAINER PRINCIPAL DO JOGO */
+        #game {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            z-index: 10;
+        }
 
-.symbol {
-    width: 70px;
-    height: 70px;
-    border: 1px solid rgba(255,255,255,0.5);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease, border-color 0.2s;
-}
+        /* SÍMBOLOS RESPONSIVOS */
+        .symbols {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2x2 no celular */
+            gap: 20px;
+        }
 
-.symbol:hover {
-    transform: scale(1.1);
-}
+        /* No PC vira uma linha só */
+        @media (min-width: 600px) {
+            .symbols {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
 
-.symbol::after {
-    content: '';
-    width: 20px;
-    height: 20px;
-    border: 1px solid white;
-}
+        .symbol {
+            width: 75px;
+            height: 75px;
+            border: 2px solid #00ff41;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            background: rgba(0, 255, 65, 0.05);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
 
-/* PROGRESSO */
-.progress {
-    display: flex;
-    gap: 12px;
-}
+        .symbol.active-flash {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 25px #00ff41;
+            transform: scale(0.95);
+        }
 
-.dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #333;
-    transition: background 0.3s;
-}
+        /* BARRA DE PROGRESSO */
+        .progress {
+            display: flex;
+            gap: 12px;
+        }
 
-.dot.active {
-    background: #f1c40f;
-}
+        .dot {
+            width: 14px;
+            height: 14px;
+            border: 1px solid #00ff41;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
 
-.dot.success {
-    background: #2ecc71;
-}
+        .dot.active { background: #00ff41; box-shadow: 0 0 8px #00ff41; }
+        .dot.success { background: #fff; border-color: #fff; box-shadow: 0 0 15px #fff; }
+        .dot.error { background: #ff4444; border-color: #ff4444; box-shadow: 0 0 8px #ff4444; }
 
-/* FINAL */
-#final {
-    position: fixed;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    opacity: 0;
-    transition: opacity 2s ease;
-}
+        /* TELA FINAL */
+        #final {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
 
-.final-text {
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    color: #aaa;
-}
+        .digit {
+            font-size: clamp(5rem, 20vw, 8rem);
+            font-weight: bold;
+            text-shadow: 0 0 20px #00ff41;
+        }
 
-.digit {
-    font-size: 6rem;
-}
+        button {
+            padding: 12px 30px;
+            background: transparent;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
 
-/* BOTÃO */
-button {
-    padding: 12px 30px;
-    background: transparent;
-    border: 1px solid white;
-    color: white;
-    border-radius: 30px;
-    cursor: pointer;
-    letter-spacing: 2px;
-}
-</style>
+        button:hover {
+            background: #00ff41;
+            color: #000;
+        }
+
+        /* Animação de tremor para erro */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+        .shake { animation: shake 0.4s ease-in-out; }
+    </style>
 </head>
-
 <body>
 
-<!-- SONS -->
-<audio id="sfx-click" src="click.mp3"></audio>
-<audio id="sfx-error" src="error.mp3"></audio>
-<audio id="sfx-success" src="success.mp3"></audio>
+    <audio id="sfx-click" src="click.mp3"></audio>
+    <audio id="sfx-error" src="error.mp3"></audio>
+    <audio id="sfx-success" src="success.mp3"></audio>
 
-<!-- INTRO -->
-<div id="intro">
-    Nem tudo é rápido,<br>
-    e acontece na mesma hora.<br><br>
-    Algumas coisas pedem<br>
-    sequência.
-</div>
-
-<!-- JOGO -->
-<div id="game">
-    <div class="symbols">
-        <div class="symbol" data-id="0"></div>
-        <div class="symbol" data-id="1"></div>
-        <div class="symbol" data-id="2"></div>
-        <div class="symbol" data-id="3"></div>
+    <div id="intro">
+        SISTEMA BLOQUEADO...<br>
+        REFLITA A SEQUÊNCIA PARA DESBLOQUEAR.
     </div>
 
-    <div class="progress" id="progress"></div>
-</div>
+    <div id="game">
+        <div class="symbols">
+            <div class="symbol" data-id="0">Δ</div>
+            <div class="symbol" data-id="1">Ω</div>
+            <div class="symbol" data-id="2">Σ</div>
+            <div class="symbol" data-id="3">Φ</div>
+        </div>
+        <div class="progress" id="progress"></div>
+    </div>
 
-<!-- FINAL -->
-<div id="final">
-    <div class="final-text">DÍGITO REVELADO</div>
-    <div class="digit">3</div>
-    <button onclick="next()">Continuar</button>
-</div>
+    <div id="final">
+        <p style="letter-spacing: 3px;">DÍGITO RECUPERADO</p>
+        <div class="digit">3</div>
+        <button onclick="next()">Continuar</button>
+    </div>
 
-<script>
-const intro = document.getElementById('intro');
-const game = document.getElementById('game');
-const finalScreen = document.getElementById('final');
+    <script>
+        const intro = document.getElementById('intro');
+        const game = document.getElementById('game');
+        const finalScreen = document.getElementById('final');
+        const progressBox = document.getElementById('progress');
+        const symbols = document.querySelectorAll('.symbol');
 
-const clickSound = document.getElementById('sfx-click');
-const errorSound = document.getElementById('sfx-error');
-const successSound = document.getElementById('sfx-success');
+        const clickSound = document.getElementById('sfx-click');
+        const errorSound = document.getElementById('sfx-error');
+        const successSound = document.getElementById('sfx-success');
 
-const symbols = document.querySelectorAll('.symbol');
-const progressBox = document.getElementById('progress');
+        let sequence = [];
+        let userInput = [];
+        const length = 4;
 
-let sequence = [];
-let input = [];
-const length = 4;
+        // Início
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => intro.style.opacity = 1, 500);
+            setTimeout(() => {
+                intro.style.opacity = 0;
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                    game.style.display = 'flex';
+                    initRound();
+                }, 1500);
+            }, 4500);
+        });
 
-/* INTRO */
-setTimeout(() => intro.style.opacity = 1, 500);
-setTimeout(() => {
-    intro.style.opacity = 0;
-    setTimeout(() => {
-        intro.style.display = 'none';
-        game.style.display = 'flex';
-        startGame();
-    }, 2000);
-}, 5000);
-
-/* JOGO */
-function startGame() {
-    sequence = shuffle([0,1,2,3]).slice(0, length);
-    input = [];
-    progressBox.innerHTML = '';
-
-    for (let i = 0; i < length; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        progressBox.appendChild(dot);
-    }
-}
-
-symbols.forEach(sym => {
-    sym.onclick = () => handleInput(Number(sym.dataset.id));
-});
-
-function handleInput(id) {
-    clickSound.currentTime = 0;
-    clickSound.play();
-
-    const index = input.length;
-
-    if (id === sequence[index]) {
-        input.push(id);
-        progressBox.children[index].classList.add('active');
-
-        if (input.length === length) {
-            success();
+        function initRound() {
+            // Gera sequência aleatória
+            sequence = Array.from({length: length}, () => Math.floor(Math.random() * 4));
+            userInput = [];
+            
+            // Prepara as bolinhas de progresso
+            progressBox.innerHTML = '';
+            for (let i = 0; i < length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                progressBox.appendChild(dot);
+            }
+            
+            setTimeout(showSequence, 1000);
         }
-    } else {
-        errorSound.play();
-        reset();
-    }
-}
 
-function reset() {
-    input = [];
-    [...progressBox.children].forEach(dot => dot.className = 'dot');
-}
+        async function showSequence() {
+            game.style.pointerEvents = 'none'; // Bloqueia cliques do jogador
+            
+            for (let id of sequence) {
+                await new Promise(r => setTimeout(r, 700));
+                flash(id);
+            }
+            
+            await new Promise(r => setTimeout(r, 500));
+            game.style.pointerEvents = 'all'; // Libera
+        }
 
-function success() {
-    successSound.play();
-    [...progressBox.children].forEach(dot => dot.className = 'dot success');
+        function flash(id) {
+            const el = document.querySelector(`[data-id="${id}"]`);
+            el.classList.add('active-flash');
+            
+            // Play sound com reset para permitir repetições rápidas
+            clickSound.currentTime = 0;
+            clickSound.play().catch(()=>{});
+            
+            setTimeout(() => el.classList.remove('active-flash'), 400);
+        }
 
-    localStorage.setItem('digit_2', '3');
+        symbols.forEach(sym => {
+            sym.addEventListener('click', () => {
+                const id = Number(sym.dataset.id);
+                flash(id);
+                checkInput(id);
+            });
+        });
 
-    setTimeout(() => {
-        game.style.display = 'none';
-        finalScreen.style.display = 'flex';
-        setTimeout(() => finalScreen.style.opacity = 1, 50);
-    }, 1500);
-}
+        function checkInput(id) {
+            const index = userInput.length;
 
-function next() {
-    window.location.href = "index.html";
-}
+            if (id === sequence[index]) {
+                userInput.push(id);
+                progressBox.children[index].classList.add('active');
 
-function shuffle(arr) {
-    return arr.sort(() => Math.random() - 0.5);
-}
-</script>
+                if (userInput.length === length) {
+                    win();
+                }
+            } else {
+                fail();
+            }
+        }
 
+        function fail() {
+            errorSound.play().catch(()=>{});
+            game.classList.add('shake');
+            [...progressBox.children].forEach(dot => dot.className = 'dot error');
+            
+            game.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                game.classList.remove('shake');
+                initRound(); // Reinicia
+            }, 800);
+        }
+
+        function win() {
+            game.style.pointerEvents = 'none';
+            successSound.play().catch(()=>{});
+            [...progressBox.children].forEach(dot => dot.className = 'dot success');
+            
+            localStorage.setItem('digit_2', '3'); // Salva o progresso
+
+            setTimeout(() => {
+                game.style.display = 'none';
+                finalScreen.style.display = 'flex';
+                setTimeout(() => finalScreen.style.opacity = 1, 50);
+            }, 1200);
+        }
+
+        function next() {
+            window.location.href = "index.html"; 
+        }
+    </script>
 </body>
 </html>
