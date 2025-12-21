@@ -1,9 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-<title>New File</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SPOILER WARNING</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&display=swap');
+
+        /* === GERAL === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            height: 100%; width: 100%; overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #050505; color: white;
+            user-select: none; -webkit-tap-highlight-color: transparent;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* === CONTAINER RESPONSIVO === */
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; 
+            aspect-ratio: 16 / 9; 
+            max-height: 100vh;
+            background: url('fundo.jpg') no-repeat center center;
+            background-size: contain; 
+            transition: filter 1.5s ease-in-out, opacity 1.5s ease-in-out;
+        }
+
+        @media (max-aspect-ratio: 16/9) {
+            #game-container {
+                width: 100vw;
+                height: 56.25vw;
+            }
+        }
+
+        /* === CAMADA DE UI === */
+        #ui-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 5%;
+        }
+
+        #spoiler-input {
+            width: 60%;
+            max-width: 400px;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.4);
+            color: white;
+            border-radius: 50px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        #spoiler-input:focus {
+            border-color: #fff;
+            background: rgba(0,0,0,0.7);
+        }
+
+        .next-btn {
+            padding: 12px 35px;
+            background: white;
+            color: black;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .next-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #feedback {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 10px;
+            height: 20px;
+            transition: opacity 0.5s;
+        }
+
+        /* OVERLAY DE ENTRADA */
+        #overlay {
+            position: absolute;
+            inset: 0;
+            background: black;
+            opacity: 1;
+            transition: opacity 2s ease;
+            z-index: 100;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
-<h1>Hello World</h1>
+
+    <div id="game-container">
+        <div id="overlay"></div>
+        
+        <div id="ui-layer">
+            <div id="feedback"></div>
+            <input type="text" id="spoiler-input" placeholder="Tente o nome deles..." autocomplete="off">
+            <div id="next-btn" class="next-btn" onclick="goToNextEnigma()">Próximo Enigma</div>
+        </div>
+    </div>
+
+    <script>
+        const overlay = document.getElementById('overlay');
+        const nextBtn = document.getElementById('next-btn');
+
+        window.onload = () => {
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                startIntro();
+            }, 1000);
+        };
+
+        function startIntro() {
+            setTimeout(() => {
+                nextBtn.classList.add('show');
+            }, 4800);
+        }
+
+        function goToNextEnigma() {
+            // Mude o nome abaixo para o arquivo do seu próximo nível
+            window.location.href = 'enigma2.html';
+        }
+
+        const input = document.getElementById('spoiler-input');
+        const feedback = document.getElementById('feedback');
+        
+        input.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' || e.target.value.length > 0) {
+                const val = input.value.toLowerCase().trim();
+                if (window.feedbackTimeout) clearTimeout(window.feedbackTimeout);
+                if (val === '') { feedback.style.opacity = 0; return; }
+
+                feedback.style.opacity = 1;
+                if (val.includes('galo') && val.includes('pato')) {
+                    feedback.innerText = "Boa tentativa... mas spoilers não se derrotam só escrevendo.";
+                } else if (val.includes('galo')) {
+                    feedback.innerText = "Você está perto... mas falta alguém.";
+                } else if (val.includes('pato')) {
+                    feedback.innerText = "Quase lá... mas isso não é o suficiente.";
+                } else {
+                    feedback.innerText = "Não adianta... fugir do spoiler nunca funciona.";
+                }
+
+                window.feedbackTimeout = setTimeout(() => { feedback.style.opacity = 0; }, 4000);
+            }
+        });
+    </script>
 </body>
 </html>
