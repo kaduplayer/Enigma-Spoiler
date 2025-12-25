@@ -213,6 +213,7 @@ audio { display: none; }
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     document.body.style.visibility = "visible";
+    checkIfComingFromEnd();
 });
 
 const textEl = document.getElementById("text");
@@ -233,6 +234,32 @@ const sfxResponse = document.getElementById("sfx-response");
 ambient.volume = 0.6;
 sfxTick.volume = 0.4;
 sfxResponse.volume = 0.8;
+
+// --- LÓGICA NOVA: PULAR INTRO ---
+function checkIfComingFromEnd() {
+    // Verifica se a URL tem ?acao=abrir
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('acao');
+
+    if (mode === 'abrir') {
+        // PULA A INTRODUÇÃO
+        intro.style.display = "none";
+        
+        // MOSTRA A SALA ESCURA IMEDIATAMENTE
+        darkRoom.style.display = "block";
+        vignette.style.opacity = 1;
+        
+        setTimeout(() => {
+            darkRoom.style.opacity = 1;
+            darkRoom.style.pointerEvents = "auto";
+            approachBtn.style.opacity = 1;
+            approachBtn.style.pointerEvents = "auto";
+            // Tenta tocar o áudio (pode ser bloqueado pelo navegador até o primeiro clique, 
+            // mas o clique em 'Aproximar' resolve isso depois)
+            ambient.play().catch(e => console.log("Aguardando interação para áudio"));
+        }, 100);
+    }
+}
 
 const lines = [
     "Algumas coisas não foram feitas para serem abertas de imediato.",
@@ -285,6 +312,9 @@ startBtn.onclick = () => {
 };
 
 approachBtn.onclick = () => {
+    // Garante que o som toque caso não tenha tocado antes
+    if(ambient.paused) ambient.play(); 
+
     chest.style.transform = "translate(-50%, -50%) scale(1.5)";
     setTimeout(() => {
         darkRoom.style.opacity = 0;
@@ -351,6 +381,9 @@ function update(i, delta) {
         sfxResponse.play();
         hintMsg.innerText = "O mecanismo respondeu...";
         journeyBtn.style.display = "none";
+        
+        // AQUI VOCÊ PODE ADICIONAR O QUE ACONTECE QUANDO O COFRE ABRE
+        // Exemplo: alert("Parabéns!");
     }
 }
 

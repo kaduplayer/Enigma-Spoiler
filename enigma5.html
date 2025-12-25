@@ -87,7 +87,7 @@
         #name-input-area { display: none; margin-top: 10px; pointer-events: all; background: #fff; padding: 5px; border: 2px solid #000; box-shadow: 4px 4px 0 rgba(0,0,0,0.8); }
         input { border: none; padding: 10px; font-family: 'Space Mono'; outline: none; font-weight: bold; font-size: 1rem; width: 180px; }
 
-        /* Estilo NOVO para a Revelação Final */
+        /* Estilo para a Revelação Final */
         .digit-reveal-container {
             margin-top: 60px;
             margin-bottom: 30px;
@@ -115,6 +115,34 @@
             color: #b71c1c; /* Vermelho intenso */
             line-height: 1;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+        
+        /* Botão de voltar ao cofre */
+        #back-to-safe-btn {
+            margin-top: 25px;
+            background: #5d4037;
+            color: #fff;
+            border: 2px solid #3e2723;
+            padding: 12px 25px;
+            font-family: 'Space Mono', monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+            text-transform: uppercase;
+        }
+
+        #back-to-safe-btn:hover {
+            background: #4e342e;
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+        }
+
+        #back-to-safe-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
         }
 
         @keyframes stampIn {
@@ -352,7 +380,7 @@
         function historiaAmizade() {
             const txt = "Aos poucos não só Alice soltava as frases e perguntas aleatórias, eu soltava algumas também.\n\nAlice começou a mostrar tudo o que ela gostava: músicas, séries, livros. 'Bora assistir juntos?' Começamos a assistir coisas ao mesmo tempo, trocar mensagens sobre episódios, discutir teorias das tramas. Eu, sem perceber, fui me apaixonando pelo mundo que ela apresentava a mim. Nós nos tornamos melhores amigos.\n\nEu ficava pensando 'será que ela só conversa comigo se for para falar de séries?', pode parecer questionamento besta, mas eu pensava isso. Quando uma hora, fui contando coisas que não tinha coragem de contar para outros, com medo de atrapalhar. Preocupações, medos, ansiedade por algo, ou até alegrias, eu não sabia como desabafar, só que Alice mostrou que estava tudo bem compartilhar isso, que eu não atrapalharia por fazer isso.\n\nEra algo puro, leal, sincero, algo que nem eu e nem ela conhecia. Uma amizade que além de tudo, confiam um no outro e contam as coisas sem medo. Um segredo que estava guardado as 7 chaves, agora estava guardado a 14 chaves.";
 typeInPaper(txt, false, () => {
-                talk(`Isso da chave é uma referência minha e da Alice, talvez você não entenda ${userName}. Espero que a Alice lembre desse dia... Acabei distraindo, desculpe. Eu morria de medo de ser um peso para as pessoas... De 'atrapalhar' com os meus problemas bestas. Mas a Alice... Ela jogou essa ideia fora.`, [
+                talk(`Isso da chave é uma referência minha e da Alice, talvez você não entenda ${userName}. Espero que a Alice lembre desse dia... Acabei distraindo, desculpe. Eu morria de medo de ser um peso para as pessoas... De 'atrapalhar' com os problemas bestas. Mas a Alice... Ela jogou essa ideia fora.`, [
                     { label: "Fico feliz que você tenha encontrado alguém para confiar.", action: respConfiar },
                     { label: "Não acredito que tinha esse pensamento Henrique.", action: respPeso },
                     { label: "Parece que as séries tiveram um papel importante.", action: respSeries }
@@ -423,17 +451,25 @@ typeInPaper(txt, false, () => {
         function revealDigit() {
             const container = document.createElement('div');
             container.className = "digit-reveal-container";
+            
+            // Aqui cria a mensagem com o dígito e o botão
             container.innerHTML = `
                 <div class="digit-label">Dígito Final</div>
                 <div class="digit-number">1</div>
+                <br>
+                <button id="back-to-safe-btn" onclick="goToSafe()">🔓 ABRIR O COFRE</button>
             `;
+            
             paper.appendChild(container);
             // Scroll suave até o fim
             notebook.scrollTo({ top: notebook.scrollHeight, behavior: 'smooth' });
         }
 
+        function goToSafe() {
+            // ATENÇÃO: Aqui está a mudança para pular a intro
+            window.location.href = "inicio.html?acao=abrir"; 
+        }
+
     </script>
 </body>
 </html>
-            
-      
