@@ -68,6 +68,22 @@ body {
     cursor: pointer;
 }
 
+/* BOTÃO DE PULAR (NOVO) */
+#skip-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 15px;
+    border: 1px solid #444;
+    background: rgba(0,0,0,0.5);
+    color: #888;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    z-index: 150;
+}
+
 /* ---------- SALA ---------- */
 #dark-room {
     position: fixed;
@@ -193,6 +209,7 @@ audio { display: none; }
 <audio id="sfx-response" src="vault-response.mp3"></audio>
 
 <div id="intro">
+    <button id="skip-btn" onclick="skipIntro()">⏩ Pular Intro</button>
     <div class="intro-text" id="text"></div>
     <button id="start-btn">Iniciar</button>
 </div>
@@ -213,7 +230,6 @@ audio { display: none; }
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     document.body.style.visibility = "visible";
-    checkSkipIntro(); // Nova função de verificação
 });
 
 const textEl = document.getElementById("text");
@@ -235,30 +251,22 @@ ambient.volume = 0.6;
 sfxTick.volume = 0.4;
 sfxResponse.volume = 0.8;
 
-// --- NOVA LÓGICA USANDO MEMÓRIA DO NAVEGADOR ---
-function checkSkipIntro() {
-    // Verifica se existe o "bilhete" deixado pelo Enigma 5
-    if (localStorage.getItem('pularIntro') === 'sim') {
-        
-        // Remove o bilhete para que, se ela recarregar a página, a intro volte ao normal
-        localStorage.removeItem('pularIntro');
+// --- NOVA FUNÇÃO SIMPLES E DIRETA ---
+function skipIntro() {
+    // Esconde a intro
+    intro.style.display = "none";
+    
+    // Mostra a sala
+    darkRoom.style.display = "block";
+    darkRoom.style.opacity = 1;
+    darkRoom.style.pointerEvents = "auto";
+    vignette.style.opacity = 1;
+    
+    approachBtn.style.opacity = 1;
+    approachBtn.style.pointerEvents = "auto";
 
-        // Pula a intro imediatamente
-        intro.style.display = "none";
-        
-        darkRoom.style.display = "block";
-        vignette.style.opacity = 1;
-        
-        setTimeout(() => {
-            darkRoom.style.opacity = 1;
-            darkRoom.style.pointerEvents = "auto";
-            approachBtn.style.opacity = 1;
-            approachBtn.style.pointerEvents = "auto";
-            
-            // Tenta tocar o áudio
-            ambient.play().catch(e => console.log("Aguardando interação para áudio"));
-        }, 100);
-    }
+    // Tenta tocar o som
+    if(ambient.paused) ambient.play().catch(e => console.log("Audio precisa de clique"));
 }
 
 const lines = [
@@ -277,10 +285,14 @@ const lines = [
 let index = 0;
 
 function showNextLine() {
+    // Se a intro já foi pulada (display none), para o loop
+    if (intro.style.display === "none") return;
+
     if (index >= lines.length) {
         setTimeout(() => {
             intro.style.opacity = 0;
             setTimeout(() => {
+                if (intro.style.display === "none") return; // Checagem dupla
                 intro.style.display = "none";
                 darkRoom.style.display = "block";
                 vignette.style.opacity = 1;
@@ -299,6 +311,7 @@ function showNextLine() {
 
     textEl.style.opacity = 0;
     setTimeout(() => {
+        if (intro.style.display === "none") return; // Checagem dupla
         textEl.innerText = lines[index++];
         textEl.style.opacity = 1;
         setTimeout(showNextLine, 2600);
@@ -380,13 +393,12 @@ function update(i, delta) {
         sfxResponse.play();
         hintMsg.innerText = "O mecanismo respondeu...";
         journeyBtn.style.display = "none";
-        
-        // AQUI PODE ADICIONAR O FINAL (Link ou Mensagem)
+        // AQUI PODE COLOCAR O FINAL (Mensagem ou alerta)
     }
 }
 
 function startJourney() {
-    window.location.href = "enigma3.html";
+    window.location.href = "enigma2.html"; // Ajustei para o enigma2 (seu primeiro enigma)
 }
 </script>
 

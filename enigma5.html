@@ -466,10 +466,8 @@ typeInPaper(txt, false, () => {
         }
 
         function goToSafe() {
-            // ATIVA O MODO PULAR
-            localStorage.setItem('pularIntro', 'sim');
-            // REDIRECIONA (VERIFIQUE SE O NOME DO ARQUIVO ESTÁ CERTO)
-            window.location.href = "inicio.html"; 
+            // ATENÇÃO: Aqui está a mudança para pular a intro
+            window.location.href = "inicio.html?acao=abrir"; 
         }
 
     </script>
