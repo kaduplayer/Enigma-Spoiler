@@ -444,29 +444,23 @@ typeInPaper(txt, false, () => {
             });
         }
 
-                function revealDigit() {
+                        function revealDigit() {
             const container = document.createElement('div');
             container.className = "digit-reveal-container";
             
-            // AQUI ESTÁ A CORREÇÃO:
-            // Usamos um link <a> por fora. É infalível.
-            // O href leva para "inicio.html" (certifique-se que o nome do arquivo é esse mesmo).
-            
+            // Usamos "./" para forçar o navegador a procurar na mesma pasta
             container.innerHTML = `
                 <div class="digit-label">Dígito Final</div>
                 <div class="digit-number">1</div>
                 <br>
-                <a href="inicio.html" style="text-decoration: none;">
-                    <button id="back-to-safe-btn">🔓 ABRIR O COFRE</button>
+                <a href="./inicio.html" style="display: block; text-decoration: none;">
+                    <button id="back-to-safe-btn" style="pointer-events: none;">🔓 ABRIR O COFRE</button>
                 </a>
             `;
             
             paper.appendChild(container);
-            // Scroll suave até o fim
             notebook.scrollTo({ top: notebook.scrollHeight, behavior: 'smooth' });
         }
-
-        // Pode apagar a função goToSafe(), não precisa mais dela.
         
 
     </script>
