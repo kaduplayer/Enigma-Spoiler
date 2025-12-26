@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Enigma 5 - O Diário Final</title>
-    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Bangers&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Enigma 5 - O Diário Final</title>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&amp;family=Bangers&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -87,7 +87,7 @@
         #name-input-area { display: none; margin-top: 10px; pointer-events: all; background: #fff; padding: 5px; border: 2px solid #000; box-shadow: 4px 4px 0 rgba(0,0,0,0.8); }
         input { border: none; padding: 10px; font-family: 'Space Mono'; outline: none; font-weight: bold; font-size: 1rem; width: 180px; }
 
-        /* Estilo para a Revelação Final */
+        /* Estilo NOVO para a Revelação Final */
         .digit-reveal-container {
             margin-top: 60px;
             margin-bottom: 30px;
@@ -116,34 +116,6 @@
             line-height: 1;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
-        
-        /* Botão de voltar ao cofre */
-        #back-to-safe-btn {
-            margin-top: 25px;
-            background: #5d4037;
-            color: #fff;
-            border: 2px solid #3e2723;
-            padding: 12px 25px;
-            font-family: 'Space Mono', monospace;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
-            text-transform: uppercase;
-        }
-
-        #back-to-safe-btn:hover {
-            background: #4e342e;
-            transform: translateY(-2px);
-            box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
-        }
-
-        #back-to-safe-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
-        }
 
         @keyframes stampIn {
             0% { opacity: 0; transform: scale(2.5); filter: blur(4px); }
@@ -151,29 +123,25 @@
         }
 
     </style>
-</head>
-<body>
-
-    <button id="toggle-btn" onclick="toggleUI()">👁️ Esconder Conversa</button>
-
-    <div id="table-container">
-        <div id="notebook">
-            <div id="paper-content"></div>
-        </div>
+ </head>
+ <body>
+  <button id="toggle-btn" onclick="toggleUI()">👁️ Esconder Conversa</button>
+  <div id="table-container">
+   <div id="notebook">
+    <div id="paper-content"></div>
+   </div>
+  </div>
+  <div class="ui-layer" id="ui-layer">
+   <div class="bubble-container">
+    <div id="henrique-bubble" class="bubble"></div>
+    <div id="interaction-area" class="options"></div>
+    <div id="name-input-area">
+     <input type="text" id="larissa-name" placeholder="Digite seu nome..." autocomplete="off">
+     <button class="btn-opt" onclick="submitName()" style="box-shadow: none; border: none; border-left: 2px solid #000;">Enviar</button>
     </div>
-
-    <div class="ui-layer" id="ui-layer">
-        <div class="bubble-container">
-            <div id="henrique-bubble" class="bubble"></div>
-            <div id="interaction-area" class="options"></div>
-            <div id="name-input-area">
-                <input type="text" id="larissa-name" placeholder="Digite seu nome..." autocomplete="off">
-                <button class="btn-opt" onclick="submitName()" style="box-shadow: none; border: none; border-left: 2px solid #000;">Enviar</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
+   </div>
+  </div>
+  <script>
         const paper = document.getElementById('paper-content');
         const bubble = document.getElementById('henrique-bubble');
         const interaction = document.getElementById('interaction-area');
@@ -378,9 +346,9 @@
 
         // --- ATO 5 ---
         function historiaAmizade() {
-            const txt = "Aos poucos não só Alice soltava as frases e perguntas aleatórias, eu soltava algumas também.\n\nAlice começou a mostrar tudo o que ela gostava: músicas, séries, livros. 'Bora assistir juntos?'Começamos a assistir coisas ao mesmo tempo, trocar mensagens sobre episódios, discutir teorias das tramas. Eu, sem perceber, fui me apaixonando pelo mundo que ela apresentava a mim. Nós nos tornamos melhores amigos.\n\nEu ficava pensando 'será que ela só conversa comigo se for para falar de séries?', pode parecer questionamento besta, mas eu pensava isso. Quando uma hora, fui contando coisas que não tinha coragem de contar para outros, com medo de atrapalhar. Preocupações, medos, ansiedade por algo, ou até alegrias, eu não sabia como desabafar, só que Alice mostrou que estava tudo bem compartilhar isso, que eu não atrapalharia por fazer isso.\n\nEra algo puro, leal, sincero, algo que nem eu e nem ela conhecia. Uma amizade que além de tudo, confiam um no outro e contam as coisas sem medo. Um segredo que estava guardado as 7 chaves, agora estava guardado a 14 chaves.";
+            const txt = "Aos poucos não só Alice soltava as frases e perguntas aleatórias, eu soltava algumas também.\n\nAlice começou a mostrar tudo o que ela gostava: músicas, séries, livros. 'Bora assistir juntos?' Começamos a assistir coisas ao mesmo tempo, trocar mensagens sobre episódios, discutir teorias das tramas. Eu, sem perceber, fui me apaixonando pelo mundo que ela apresentava a mim. Nós nos tornamos melhores amigos.\n\nEu ficava pensando 'será que ela só conversa comigo se for para falar de séries?', pode parecer questionamento besta, mas eu pensava isso. Quando uma hora, fui contando coisas que não tinha coragem de contar para outros, com medo de atrapalhar. Preocupações, medos, ansiedade por algo, ou até alegrias, eu não sabia como desabafar, só que Alice mostrou que estava tudo bem compartilhar isso, que eu não atrapalharia por fazer isso.\n\nEra algo puro, leal, sincero, algo que nem eu e nem ela conhecia. Uma amizade que além de tudo, confiam um no outro e contam as coisas sem medo. Um segredo que estava guardado as 7 chaves, agora estava guardado a 14 chaves.";
 typeInPaper(txt, false, () => {
-                talk(`Isso da chave é uma referência minha e da Alice, talvez você não entenda ${userName}. Espero que a Alice lembre desse dia... Acabei distraindo, desculpe. Eu morria de medo de ser um peso para as pessoas... De 'atrapalhar' com os problemas bestas. Mas a Alice... Ela jogou essa ideia fora.`, [
+                talk(`Isso da chave é uma referência minha e da Alice, talvez você não entenda ${userName}. Espero que a Alice lembre desse dia... Acabei distraindo, desculpe. Eu morria de medo de incomodar... De 'atrapalhar' com os meus problemas bestas. Mas a Alice... Ela jogou essa ideia fora.`, [
                     { label: "Fico feliz que você tenha encontrado alguém para confiar.", action: respConfiar },
                     { label: "Não acredito que tinha esse pensamento Henrique.", action: respPeso },
                     { label: "Parece que as séries tiveram um papel importante.", action: respSeries }
@@ -405,7 +373,7 @@ typeInPaper(txt, false, () => {
         function piadaAlice() {
             talk("Eu estou aqui elogiando a Alice, mas não fala para ela não, ela ficaria se achando... E no fim, a mais sortuda é ela, por ter a minha amizade. Está acabando a história, eu juro!", [
                 { label: "Pode continuar estou gostando de ouvir!", action: ato6 },
-                { label: "Finalmente né, quanta enrolação!", action: () => talk("Chata igual a Alice...", [{label:"Ler o final", action: ato6 }]) }
+                { label: "Finalmente né, quanta enrolação!", action: () => talk("Chata igual a Alice...", [{label:"Deve ser eu e a Alice as chatas... Continua!", action: ato6 }]) }
             ]);
         }
 
@@ -432,7 +400,7 @@ typeInPaper(txt, false, () => {
             ]);
         }
         function respLouco3() {
-            talk("No começo, eu me sentia um peso. Mas depois entendi que era isso que os amigos fazem.", [
+            talk("No começo, eu sentia que poderia estar incomodando. Mas depois entendi que era isso que os amigos fazem.", [
                 { label: "Continuar...", action: atoFinal }
             ]);
         }
@@ -451,32 +419,15 @@ typeInPaper(txt, false, () => {
         function revealDigit() {
             const container = document.createElement('div');
             container.className = "digit-reveal-container";
-            
-            // Aqui cria a mensagem com o dígito e o botão
             container.innerHTML = `
                 <div class="digit-label">Dígito Final</div>
                 <div class="digit-number">1</div>
-                <br>
-                <button id="back-to-safe-btn" onclick="goToSafe()">🔓 ABRIR O COFRE</button>
             `;
-            
             paper.appendChild(container);
             // Scroll suave até o fim
             notebook.scrollTo({ top: notebook.scrollHeight, behavior: 'smooth' });
         }
 
-        function goToSafe() {
-            // Se o arquivo do cofre tiver outro nome, mude 'index.html' abaixo
-            window.location.href = "index.html"; 
-        }
-
-    </script>
-</body>
-</html>
-ment.getElementById...addEventListener' que estava aqui
-            // porque ele não é mais necessário e estava a causar o bloqueio.
-        }
-        
     </script>
  </body>
 </html>
