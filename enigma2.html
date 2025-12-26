@@ -14,8 +14,49 @@ html, body {
     height: 100%;
     font-family: 'Montserrat', sans-serif;
     overflow: hidden;
+    background: black;
 }
 
+/* --- INTRODUÇÃO (NOVO) --- */
+#intro-overlay {
+    position: fixed;
+    inset: 0;
+    background: black;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding: 30px;
+}
+
+.intro-line {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    max-width: 600px;
+    opacity: 0;
+    transition: opacity 1s ease;
+    position: absolute; /* Para ficarem no mesmo lugar */
+}
+
+#start-fragment-btn {
+    margin-top: 20px;
+    padding: 12px 35px;
+    border: 1px solid rgba(255,255,255,0.6);
+    background: transparent;
+    color: white;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 1s;
+    display: none;
+    z-index: 110;
+}
+
+/* --- JOGO PRINCIPAL --- */
 #background-container {
     position: fixed;
     inset: 0;
@@ -23,6 +64,7 @@ html, body {
     background-size: cover;
     z-index: 0;
     transition: all 2s ease;
+    opacity: 0; /* Começa invisível */
 }
 
 body.final-state #background-container {
@@ -30,7 +72,6 @@ body.final-state #background-container {
     transform: scale(1.05);
 }
 
-/* ---------- CONTEÚDO ---------- */
 .main-content {
     position: relative;
     z-index: 20;
@@ -43,6 +84,8 @@ body.final-state #background-container {
     padding: 25px;
     color: white;
     transition: opacity 1s ease;
+    opacity: 0; /* Começa invisível */
+    pointer-events: none;
 }
 
 h1 {
@@ -68,7 +111,7 @@ input {
     outline: none;
 }
 
-button {
+button.check-btn {
     padding: 12px 28px;
     border-radius: 30px;
     border: none;
@@ -82,9 +125,10 @@ button {
     margin-top: 20px;
     opacity: 0;
     transition: opacity 0.5s;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* ---------- FINAL ---------- */
+/* --- FINAL --- */
 #final-sequence {
     position: fixed;
     inset: 0;
@@ -126,7 +170,6 @@ button {
     color: white;
 }
 
-/* ---------- BOTÃO PRÓXIMO ---------- */
 #next-btn {
     margin-top: 35px;
     padding: 14px 38px;
@@ -148,13 +191,23 @@ button {
 
 <body>
 
+<audio id="success-sound" src="lock-correct.mp3"></audio>
+
+<div id="intro-overlay">
+    <p class="intro-line" id="line1">O começo no Senai foi apenas o primeiro passo.</p>
+    <p class="intro-line" id="line2">Mas a nossa amizade ganhou vida de um jeito diferente.</p>
+    <p class="intro-line" id="line3">Lembra de como passávamos horas dividindo histórias e telas?</p>
+    <p class="intro-line" id="line4">Uma pergunta simples mudou tudo...</p>
+    <button id="start-fragment-btn" onclick="startFragment()">Iniciar Fragmento</button>
+</div>
+
 <div id="background-container"></div>
 
 <div class="main-content" id="ui">
     <h1>O que conecta tudo isso?</h1>
     <div class="input-group">
-        <input type="text" id="answer" placeholder="Sua resposta...">
-        <button onclick="check()">Confirmar</button>
+        <input type="text" id="answer" placeholder="Sua resposta..." autocomplete="off">
+        <button class="check-btn" onclick="check()">Confirmar</button>
     </div>
     <div id="feedback">Incorreto. Tente novamente.</div>
 </div>
@@ -171,56 +224,119 @@ button {
 </div>
 
 <script>
-const validAnswers = [
-    "bora assistir juntos",
-    "bora assistir juntos?",
-    "bora ler juntos",
-    "bora ler juntos?"
-];
+    // --- LÓGICA DA INTRODUÇÃO ---
+    const lines = [
+        { id: 'line1', duration: 4000 },
+        { id: 'line2', duration: 4000 },
+        { id: 'line3', duration: 4500 },
+        { id: 'line4', duration: 4000 }
+    ];
 
-const ui = document.getElementById("ui");
-const input = document.getElementById("answer");
-const feedback = document.getElementById("feedback");
+    let currentTime = 500;
 
-function check() {
-    const value = input.value.trim().toLowerCase();
+    // Sequência de textos
+    window.onload = () => {
+        lines.forEach((step, index) => {
+            // Aparece
+            setTimeout(() => {
+                document.getElementById(step.id).style.opacity = "1";
+            }, currentTime);
 
-    if (validAnswers.includes(value)) {
-        success();
-    } else {
-        feedback.style.opacity = 1;
-        ui.style.transform = "translateX(5px)";
-        setTimeout(() => ui.style.transform = "translateX(-5px)", 80);
-        setTimeout(() => ui.style.transform = "translateX(0)", 160);
+            // Desaparece (se não for a última)
+            if (index < lines.length - 1) {
+                setTimeout(() => {
+                    document.getElementById(step.id).style.opacity = "0";
+                }, currentTime + step.duration - 1000);
+            } else {
+                // Se for a última, some o texto e mostra o botão
+                setTimeout(() => {
+                    document.getElementById(step.id).style.opacity = "0";
+                    setTimeout(() => {
+                        const btn = document.getElementById('start-fragment-btn');
+                        btn.style.display = "block";
+                        setTimeout(() => btn.style.opacity = "1", 100);
+                    }, 1000);
+                }, currentTime + step.duration);
+            }
+            currentTime += step.duration;
+        });
+    };
+
+    function startFragment() {
+        const intro = document.getElementById('intro-overlay');
+        const bg = document.getElementById('background-container');
+        const ui = document.getElementById('ui');
+
+        intro.style.transition = "opacity 1.5s";
+        intro.style.opacity = "0";
+
+        setTimeout(() => {
+            intro.style.display = "none";
+            bg.style.opacity = "1";
+            ui.style.opacity = "1";
+            ui.style.pointerEvents = "auto";
+        }, 1500);
     }
-}
 
-function success() {
-    // salva progresso
-    localStorage.setItem("enigma2_resolvido", "true");
-    localStorage.setItem("digito_enigma2", "3");
+    // --- LÓGICA DO ENIGMA ---
+    const validAnswers = [
+        "bora assistir juntos",
+        "bora assistir juntos?",
+        "bora ler juntos",
+        "bora ler juntos?",
+        "vamos assistir juntos", 
+        "vamos ler juntos"
+    ];
 
-    ui.style.opacity = 0;
-    document.body.classList.add("final-state");
+    const input = document.getElementById("answer");
+    const feedback = document.getElementById("feedback");
+    const successSound = document.getElementById("success-sound");
 
-    setTimeout(() => {
-        ui.style.display = "none";
-        document.getElementById("final-text").style.opacity = 1;
-    }, 1000);
+    function check() {
+        const value = input.value.trim().toLowerCase();
 
-    setTimeout(() => {
-        document.getElementById("digit-box").style.opacity = 1;
-        document.getElementById("next-btn").style.opacity = 1;
-    }, 3500);
-}
+        if (validAnswers.includes(value)) {
+            success();
+        } else {
+            // Erro Visual (Tremida)
+            feedback.style.opacity = 1;
+            document.getElementById("ui").style.transform = "translateX(5px)";
+            setTimeout(() => document.getElementById("ui").style.transform = "translateX(-5px)", 80);
+            setTimeout(() => document.getElementById("ui").style.transform = "translateX(0)", 160);
+        }
+    }
 
-function goNext() {
-    window.location.href = "enigma4.html";
-}
+    function success() {
+        // Toca o som de acerto
+        successSound.play().catch(e => console.log("Erro som:", e));
 
-input.addEventListener("keydown", e => {
-    if (e.key === "Enter") check();
-});
+        // Salva progresso
+        localStorage.setItem("enigma2_resolvido", "true");
+        localStorage.setItem("digito_enigma2", "3");
+
+        const ui = document.getElementById("ui");
+        ui.style.opacity = 0;
+        ui.style.pointerEvents = "none";
+        document.body.classList.add("final-state");
+
+        setTimeout(() => {
+            ui.style.display = "none";
+            document.getElementById("final-text").style.opacity = 1;
+        }, 1000);
+
+        setTimeout(() => {
+            document.getElementById("digit-box").style.opacity = 1;
+            document.getElementById("next-btn").style.opacity = 1;
+        }, 3000);
+    }
+
+    function goNext() {
+        window.location.href = "enigma4.html";
+    }
+
+    input.addEventListener("keydown", e => {
+        if (e.key === "Enter") check();
+    });
 </script>
 
 </body>
