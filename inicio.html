@@ -1,13 +1,11 @@
 <!doctype html>
 <html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>O Cofre</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-
-<style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O Cofre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" rel="stylesheet">
+  <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
@@ -198,36 +196,29 @@ body {
 
 audio { display: none; }
 </style>
-</head>
-
-<body>
-
-<div id="vignette"></div>
-
-<audio id="ambient" src="ambiente.mp3" loop></audio>
-<audio id="sfx-tick" src="tick.mp3"></audio>
-<audio id="sfx-response" src="vault-response.mp3"></audio>
-
-<div id="intro">
-    <button id="skip-btn" onclick="skipIntro()">⏩ Pular Intro</button>
-    <div class="intro-text" id="text"></div>
-    <button id="start-btn">Iniciar</button>
-</div>
-
-<div id="dark-room">
-    <img id="chest" src="cofre.png" alt="Cofre">
-    <button id="approach-button">APROXIMAR-SE</button>
-</div>
-
-<div id="vault">
-    <div class="dials" id="dials"></div>
-    <div class="hint-container">
-        <div class="hint" id="hint-msg">Talvez nem tudo se abra de primeira.</div>
-        <button id="journey-btn" onclick="startJourney()">Voltar ao começo</button>
-    </div>
-</div>
-
-<script>
+ </head>
+ <body>
+  <div id="vignette"></div>
+  <audio id="ambient" src="ambiente.mp3" loop></audio>
+  <audio id="sfx-tick" src="tick.mp3"></audio>
+  <audio id="sfx-response" src="vault-response.mp3"></audio>
+  <div id="intro">
+   <button id="skip-btn" onclick="skipIntro()">⏩ Pular Intro</button>
+   <div class="intro-text" id="text"></div>
+   <button id="start-btn">Iniciar</button>
+  </div>
+  <div id="dark-room">
+   <img id="chest" src="cofre.png" alt="Cofre">
+   <button id="approach-button">APROXIMAR-SE</button>
+  </div>
+  <div id="vault">
+   <div class="dials" id="dials"></div>
+   <div class="hint-container">
+    <div class="hint" id="hint-msg">Talvez nem tudo se abra de primeira.</div>
+    <button id="journey-btn" onclick="startJourney()">Voltar ao começo</button>
+   </div>
+  </div>
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
     document.body.style.visibility = "visible";
 });
@@ -398,9 +389,8 @@ function update(i, delta) {
 }
 
 function startJourney() {
-    window.location.href = "enigma2.html"; // Ajustei para o enigma2 (seu primeiro enigma)
+    window.location.href = "enigma3.html"; // Ajustei para o enigma2 (seu primeiro enigma)
 }
 </script>
-
-</body>
+ </body>
 </html>
