@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fragmento 4 - Sincronia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fragmento 4 - Sincronia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             width: 100%; height: 100%; font-family: 'Space Mono', monospace;
@@ -64,37 +64,34 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
         .shake { animation: shake 0.3s ease-in-out; }
     </style>
-</head>
-<body>
-
-    <div id="intro-overlay">
-        <p class="intro-text" id="t1">Nem tudo acontece na mesma hora.</p>
-        <p class="intro-text" id="t2">O tempo também responde.</p>
-        <p class="intro-text" id="t3">Escutar é diferente de ouvir.</p>
-        <p class="intro-text" id="t4">Sincronizar exige paciência.</p>
-        <p class="intro-text" id="t5">O silêncio faz parte da frequência.</p>
-        <button id="start-btn" onclick="beginSychronization()">Sincronizar</button>
-    </div>
-
-    <div id="status-bar">PROTOCOLO_ECO // ESTÁGIO_04</div>
-
-    <div id="game">
-        <div class="level-text">SINCRONIA: <span id="level-num">1</span>/5</div>
-        <div class="symbols">
-            <div class="symbol" data-id="0" data-freq="261">Δ</div>
-            <div class="symbol" data-id="1" data-freq="329">Ω</div>
-            <div class="symbol" data-id="2" data-freq="392">Σ</div>
-            <div class="symbol" data-id="3" data-freq="523">Φ</div>
-        </div>
-    </div>
-
-    <div id="final">
-        <p style="letter-spacing: 2px; opacity: 0.6;">DÍGITO RECUPERADO</p>
-        <div class="digit">3</div>
-        <button onclick="window.location.href='index.html'">Finalizar</button>
-    </div>
-
-    <script>
+ </head>
+ <body>
+  <div id="intro-overlay">
+   <p class="intro-text" id="t1">Nem tudo acontece na mesma hora.</p>
+   <p class="intro-text" id="t2">O tempo também responde.</p>
+   <p class="intro-text" id="t3">Escutar é diferente de ouvir.</p>
+   <p class="intro-text" id="t4">Sincronizar exige paciência.</p>
+   <p class="intro-text" id="t5">O silêncio faz parte da frequência.</p>
+   <button id="start-btn" onclick="beginSychronization()">Sincronizar</button>
+  </div>
+  <div id="status-bar">PROTOCOLO_ECO // ESTÁGIO_04</div>
+  <div id="game">
+   <div class="level-text">
+    SINCRONIA: <span id="level-num">1</span>/5
+   </div>
+   <div class="symbols">
+    <div class="symbol" data-id="0" data-freq="261">Δ</div>
+    <div class="symbol" data-id="1" data-freq="329">Ω</div>
+    <div class="symbol" data-id="2" data-freq="392">Σ</div>
+    <div class="symbol" data-id="3" data-freq="523">Φ</div>
+   </div>
+  </div>
+  <div id="final">
+   <p style="letter-spacing: 2px; opacity: 0.6;">DÍGITO RECUPERADO</p>
+   <div class="digit">3</div>
+   <button onclick="window.location.href='enigma5.html'">Finalizar</button>
+  </div>
+  <script>
         // --- LÓGICA DA INTRODUÇÃO CORRIGIDA ---
         const timeline = [
             { id: 't1', duration: 4000 }, 
@@ -225,8 +222,8 @@
             document.getElementById('game').style.display = 'none';
             document.getElementById('final').style.display = 'flex';
             // Guardamos o dígito no localStorage para o cofre
-            localStorage.setItem('digit_enigma4', '3');
+            localStorage.setItem('digit_enigma4', '2');
         }
     </script>
-</body>
+ </body>
 </html>
