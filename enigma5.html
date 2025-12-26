@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Enigma 5 - O Diário Final</title>
-    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Bangers&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Enigma 5 - O Diário Final</title>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&amp;family=Bangers&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -151,29 +151,25 @@
         }
 
     </style>
-</head>
-<body>
-
-    <button id="toggle-btn" onclick="toggleUI()">👁️ Esconder Conversa</button>
-
-    <div id="table-container">
-        <div id="notebook">
-            <div id="paper-content"></div>
-        </div>
+ </head>
+ <body>
+  <button id="toggle-btn" onclick="toggleUI()">👁️ Esconder Conversa</button>
+  <div id="table-container">
+   <div id="notebook">
+    <div id="paper-content"></div>
+   </div>
+  </div>
+  <div class="ui-layer" id="ui-layer">
+   <div class="bubble-container">
+    <div id="henrique-bubble" class="bubble"></div>
+    <div id="interaction-area" class="options"></div>
+    <div id="name-input-area">
+     <input type="text" id="larissa-name" placeholder="Digite seu nome..." autocomplete="off">
+     <button class="btn-opt" onclick="submitName()" style="box-shadow: none; border: none; border-left: 2px solid #000;">Enviar</button>
     </div>
-
-    <div class="ui-layer" id="ui-layer">
-        <div class="bubble-container">
-            <div id="henrique-bubble" class="bubble"></div>
-            <div id="interaction-area" class="options"></div>
-            <div id="name-input-area">
-                <input type="text" id="larissa-name" placeholder="Digite seu nome..." autocomplete="off">
-                <button class="btn-opt" onclick="submitName()" style="box-shadow: none; border: none; border-left: 2px solid #000;">Enviar</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
+   </div>
+  </div>
+  <script>
         const paper = document.getElementById('paper-content');
         const bubble = document.getElementById('henrique-bubble');
         const interaction = document.getElementById('interaction-area');
@@ -448,16 +444,21 @@ typeInPaper(txt, false, () => {
             });
         }
 
-        function revealDigit() {
+                function revealDigit() {
             const container = document.createElement('div');
             container.className = "digit-reveal-container";
             
-            // Aqui cria a mensagem com o dígito e o botão
+            // AQUI ESTÁ A CORREÇÃO:
+            // Usamos um link <a> por fora. É infalível.
+            // O href leva para "inicio.html" (certifique-se que o nome do arquivo é esse mesmo).
+            
             container.innerHTML = `
                 <div class="digit-label">Dígito Final</div>
                 <div class="digit-number">1</div>
                 <br>
-                <button id="back-to-safe-btn" onclick="goToSafe()">🔓 ABRIR O COFRE</button>
+                <a href="inicio.html" style="text-decoration: none;">
+                    <button id="back-to-safe-btn">🔓 ABRIR O COFRE</button>
+                </a>
             `;
             
             paper.appendChild(container);
@@ -465,11 +466,9 @@ typeInPaper(txt, false, () => {
             notebook.scrollTo({ top: notebook.scrollHeight, behavior: 'smooth' });
         }
 
-        function goToSafe() {
-            // ATENÇÃO: Aqui está a mudança para pular a intro
-            window.location.href = "inicio.html?acao=abrir"; 
-        }
+        // Pode apagar a função goToSafe(), não precisa mais dela.
+        
 
     </script>
-</body>
+ </body>
 </html>
