@@ -180,7 +180,9 @@ button.check-btn {
     cursor: pointer;
     opacity: 0;
     transition: opacity 1.5s, background 0.3s;
-    pointer-events: auto;
+    
+    /* CORREÇÃO AQUI: Começa sem clique */
+    pointer-events: none; 
 }
 
 #next-btn:hover {
@@ -217,7 +219,6 @@ button.check-btn {
 
     <div class="digit-container" id="digit-box">
         <span class="unlock-label">Dígito revelado</span>
-        
         <span class="the-number">9</span>
 
         <button id="next-btn" onclick="goNext()">Seguir para o próximo enigma</button>
@@ -225,17 +226,16 @@ button.check-btn {
 </div>
 
 <script>
-    // --- SISTEMA DE ÁUDIO SINTÉTICO (GERADO VIA CÓDIGO) ---
+    // --- SISTEMA DE ÁUDIO SINTÉTICO ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Som de Erro (Bzzzt)
     function playErrorSound() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        osc.type = 'sawtooth';
+        osc.type = 'sawtooth'; 
         osc.frequency.setValueAtTime(150, audioCtx.currentTime); 
         osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3); 
 
@@ -249,14 +249,13 @@ button.check-btn {
         osc.stop(audioCtx.currentTime + 0.3);
     }
 
-    // Som de Intro (Ping Suave)
     function playIntroTone() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        osc.type = 'sine';
+        osc.type = 'sine'; 
         osc.frequency.setValueAtTime(440, audioCtx.currentTime); 
         
         gain.gain.setValueAtTime(0, audioCtx.currentTime);
@@ -343,7 +342,7 @@ button.check-btn {
         if (validAnswers.includes(value)) {
             success();
         } else {
-            playErrorSound(); // Som de erro
+            playErrorSound(); 
             feedback.style.opacity = 1;
             document.getElementById("ui").style.transform = "translateX(5px)";
             setTimeout(() => document.getElementById("ui").style.transform = "translateX(-5px)", 80);
@@ -355,7 +354,6 @@ button.check-btn {
         successSound.play().catch(e => console.log("Erro som:", e));
 
         localStorage.setItem("enigma2_resolvido", "true");
-        // Salva o dígito 9
         localStorage.setItem("digito_enigma2", "9");
 
         const ui = document.getElementById("ui");
@@ -370,12 +368,16 @@ button.check-btn {
 
         setTimeout(() => {
             document.getElementById("digit-box").style.opacity = 1;
-            document.getElementById("next-btn").style.opacity = 1;
+            const nextBtn = document.getElementById("next-btn");
+            nextBtn.style.opacity = 1;
+            
+            // CORREÇÃO AQUI: Ativa o clique agora
+            nextBtn.style.pointerEvents = "auto"; 
         }, 3000);
     }
 
     function goNext() {
-        // MUDANÇA: Leva para o Index (Spoiler)
+        // Leva para o Spoiler (Index)
         window.location.href = "index.html";
     }
 
