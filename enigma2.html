@@ -126,6 +126,43 @@ button.check-btn {
     opacity: 0;
     transition: opacity 0.5s;
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    min-height: 24px;
+}
+
+/* --- SISTEMA DE DICAS --- */
+#hint-container {
+    margin-top: 15px;
+    opacity: 0;
+    pointer-events: none; /* Não clicável até aparecer */
+    transition: opacity 1s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#hint-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#hint-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+#hint-text {
+    font-size: 0.9rem;
+    color: #ffd700; /* Um amarelo suave para destaque */
+    font-style: italic;
+    min-height: 20px;
 }
 
 /* --- FINAL --- */
@@ -180,9 +217,7 @@ button.check-btn {
     cursor: pointer;
     opacity: 0;
     transition: opacity 1.5s, background 0.3s;
-    
-    /* CORREÇÃO AQUI: Começa sem clique */
-    pointer-events: none; 
+    pointer-events: none; /* Começa bloqueado */
 }
 
 #next-btn:hover {
@@ -212,6 +247,11 @@ button.check-btn {
         <button class="check-btn" onclick="check()">Confirmar</button>
     </div>
     <div id="feedback">Incorreto. Tente novamente.</div>
+    
+    <div id="hint-container">
+        <button id="hint-btn" onclick="showNextHint()">Preciso de uma dica</button>
+        <div id="hint-text"></div>
+    </div>
 </div>
 
 <div id="final-sequence">
@@ -220,56 +260,45 @@ button.check-btn {
     <div class="digit-container" id="digit-box">
         <span class="unlock-label">Dígito revelado</span>
         <span class="the-number">9</span>
-
         <button id="next-btn" onclick="goNext()">Seguir para o próximo enigma</button>
     </div>
 </div>
 
 <script>
-    // --- SISTEMA DE ÁUDIO SINTÉTICO ---
+    // --- ÁUDIO SINTÉTICO ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playErrorSound() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-
-        osc.type = 'sawtooth'; 
+        osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(150, audioCtx.currentTime); 
         osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3); 
-
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        
         osc.start();
         osc.stop(audioCtx.currentTime + 0.3);
     }
 
     function playIntroTone() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-
         osc.type = 'sine'; 
         osc.frequency.setValueAtTime(440, audioCtx.currentTime); 
-        
         gain.gain.setValueAtTime(0, audioCtx.currentTime);
         gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.1); 
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5); 
-
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        
         osc.start();
         osc.stop(audioCtx.currentTime + 1.5);
     }
 
-    // --- LÓGICA DA INTRODUÇÃO ---
+    // --- INTRODUÇÃO ---
     const lines = [
         { id: 'line1', duration: 4000 },
         { id: 'line2', duration: 4000 },
@@ -306,7 +335,6 @@ button.check-btn {
 
     function startFragment() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-
         const intro = document.getElementById('intro-overlay');
         const bg = document.getElementById('background-container');
         const ui = document.getElementById('ui');
@@ -322,7 +350,7 @@ button.check-btn {
         }, 1500);
     }
 
-    // --- LÓGICA DO ENIGMA ---
+    // --- LÓGICA DO JOGO E DICAS ---
     const validAnswers = [
         "bora assistir juntos",
         "bora assistir juntos?",
@@ -332,8 +360,19 @@ button.check-btn {
         "vamos ler juntos"
     ];
 
+    const hints = [
+        "Dica: Convite",
+        "Dica: ...juntos",
+        "Dica: Bora..."
+    ];
+
+    let errorCount = 0;
+    let currentHintIndex = 0;
+
     const input = document.getElementById("answer");
     const feedback = document.getElementById("feedback");
+    const hintContainer = document.getElementById("hint-container");
+    const hintText = document.getElementById("hint-text");
     const successSound = document.getElementById("success-sound");
 
     function check() {
@@ -342,11 +381,29 @@ button.check-btn {
         if (validAnswers.includes(value)) {
             success();
         } else {
-            playErrorSound(); 
+            playErrorSound();
+            errorCount++;
             feedback.style.opacity = 1;
+            
+            // Ativa o botão de dica após 3 erros
+            if (errorCount >= 3) {
+                hintContainer.style.opacity = 1;
+                hintContainer.style.pointerEvents = "auto";
+            }
+
             document.getElementById("ui").style.transform = "translateX(5px)";
             setTimeout(() => document.getElementById("ui").style.transform = "translateX(-5px)", 80);
             setTimeout(() => document.getElementById("ui").style.transform = "translateX(0)", 160);
+        }
+    }
+
+    function showNextHint() {
+        if (currentHintIndex < hints.length) {
+            hintText.innerText = hints[currentHintIndex];
+            currentHintIndex++;
+        } else {
+            // Se acabarem as dicas, volta para a última ou mantém
+            hintText.innerText = hints[hints.length - 1];
         }
     }
 
@@ -370,14 +427,11 @@ button.check-btn {
             document.getElementById("digit-box").style.opacity = 1;
             const nextBtn = document.getElementById("next-btn");
             nextBtn.style.opacity = 1;
-            
-            // CORREÇÃO AQUI: Ativa o clique agora
-            nextBtn.style.pointerEvents = "auto"; 
+            nextBtn.style.pointerEvents = "auto";
         }, 3000);
     }
 
     function goNext() {
-        // Leva para o Spoiler (Index)
         window.location.href = "index.html";
     }
 
