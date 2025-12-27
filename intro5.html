@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>O Último Fragmento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .intro-line {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 80%;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        #start-diary-btn {
+            padding: 15px 35px;
+            border: 1px solid rgba(255,255,255,0.4);
+            background: transparent;
+            color: white;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 1.5s ease;
+            display: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #start-diary-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-container">
+        <p class="intro-line" id="l1">Chegamos ao último fragmento.</p>
+        <p class="intro-line" id="l2">Algumas histórias não são escritas apenas com palavras...</p>
+        <p class="intro-line" id="l3">...mas com o tempo que dedicamos um ao outro.</p>
+        <p class="intro-line" id="l4">Este é o registro do que fomos e do que ainda seremos.</p>
+        
+        <button id="start-diary-btn" onclick="openDiary()">Abrir o Diário</button>
+    </div>
+
+    <script>
+        const lines = [
+            { id: 'l1', duration: 4000 },
+            { id: 'l2', duration: 4500 },
+            { id: 'l3', duration: 4500 },
+            { id: 'l4', duration: 5000 }
+        ];
+
+        let delay = 500;
+
+        window.onload = () => {
+            lines.forEach((line, index) => {
+                // Aparece o texto
+                setTimeout(() => {
+                    document.getElementById(line.id).style.opacity = "1";
+                }, delay);
+
+                // Desaparece o texto (menos o último)
+                if (index < lines.length - 1) {
+                    setTimeout(() => {
+                        document.getElementById(line.id).style.opacity = "0";
+                    }, delay + line.duration - 1000);
+                } else {
+                    // Após o último texto sumir, mostra o botão
+                    setTimeout(() => {
+                        document.getElementById(line.id).style.opacity = "0";
+                        setTimeout(() => {
+                            const btn = document.getElementById('start-diary-btn');
+                            btn.style.display = "block";
+                            setTimeout(() => btn.style.opacity = "1", 100);
+                        }, 1000);
+                    }, delay + line.duration);
+                }
+                delay += line.duration;
+            });
+        };
+
+        function openDiary() {
+            // Leva para o enigma5.html que você já tem
+            window.location.href = "enigma5.html";
+        }
+    </script>
+</body>
+</html>
