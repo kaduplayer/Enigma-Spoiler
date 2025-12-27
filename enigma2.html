@@ -133,7 +133,7 @@ button.check-btn {
 #hint-container {
     margin-top: 15px;
     opacity: 0;
-    pointer-events: none; /* Não clicável até aparecer */
+    pointer-events: none; 
     transition: opacity 1s;
     display: flex;
     flex-direction: column;
@@ -160,7 +160,8 @@ button.check-btn {
 
 #hint-text {
     font-size: 0.9rem;
-    color: #ffd700; /* Um amarelo suave para destaque */
+    /* MUDANÇA AQUI: Branco suave em vez de amarelo */
+    color: rgba(255, 255, 255, 0.8); 
     font-style: italic;
     min-height: 20px;
 }
@@ -217,7 +218,7 @@ button.check-btn {
     cursor: pointer;
     opacity: 0;
     transition: opacity 1.5s, background 0.3s;
-    pointer-events: none; /* Começa bloqueado */
+    pointer-events: none; 
 }
 
 #next-btn:hover {
@@ -265,7 +266,6 @@ button.check-btn {
 </div>
 
 <script>
-    // --- ÁUDIO SINTÉTICO ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playErrorSound() {
@@ -298,7 +298,6 @@ button.check-btn {
         osc.stop(audioCtx.currentTime + 1.5);
     }
 
-    // --- INTRODUÇÃO ---
     const lines = [
         { id: 'line1', duration: 4000 },
         { id: 'line2', duration: 4000 },
@@ -350,7 +349,6 @@ button.check-btn {
         }, 1500);
     }
 
-    // --- LÓGICA DO JOGO E DICAS ---
     const validAnswers = [
         "bora assistir juntos",
         "bora assistir juntos?",
@@ -385,7 +383,6 @@ button.check-btn {
             errorCount++;
             feedback.style.opacity = 1;
             
-            // Ativa o botão de dica após 3 erros
             if (errorCount >= 3) {
                 hintContainer.style.opacity = 1;
                 hintContainer.style.pointerEvents = "auto";
@@ -402,7 +399,6 @@ button.check-btn {
             hintText.innerText = hints[currentHintIndex];
             currentHintIndex++;
         } else {
-            // Se acabarem as dicas, volta para a última ou mantém
             hintText.innerText = hints[hints.length - 1];
         }
     }
