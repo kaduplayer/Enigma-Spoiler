@@ -17,7 +17,7 @@ html, body {
     background: black;
 }
 
-/* --- INTRODUÇÃO (NOVO) --- */
+/* --- INTRODUÇÃO --- */
 #intro-overlay {
     position: fixed;
     inset: 0;
@@ -38,7 +38,7 @@ html, body {
     max-width: 600px;
     opacity: 0;
     transition: opacity 1s ease;
-    position: absolute; /* Para ficarem no mesmo lugar */
+    position: absolute;
 }
 
 #start-fragment-btn {
@@ -64,7 +64,7 @@ html, body {
     background-size: cover;
     z-index: 0;
     transition: all 2s ease;
-    opacity: 0; /* Começa invisível */
+    opacity: 0;
 }
 
 body.final-state #background-container {
@@ -84,7 +84,7 @@ body.final-state #background-container {
     padding: 25px;
     color: white;
     transition: opacity 1s ease;
-    opacity: 0; /* Começa invisível */
+    opacity: 0;
     pointer-events: none;
 }
 
@@ -224,6 +224,52 @@ button.check-btn {
 </div>
 
 <script>
+    // --- SISTEMA DE ÁUDIO SINTÉTICO ---
+    // Cria o contexto de áudio (o "gerador" de sons do navegador)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Função para tocar som de erro (Bzzzt grave)
+    function playErrorSound() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth'; // Onda dente de serra (som mais "áspero")
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime); // Começa grave
+        osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3); // Cai rapidinho
+
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    // Função para tocar som suave da intro (Ping delicado)
+    function playIntroTone() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine'; // Onda senoidal (som puro e suave)
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime); // Nota Lá
+        
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.1); // Fade in
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5); // Fade out longo
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.5);
+    }
+
     // --- LÓGICA DA INTRODUÇÃO ---
     const lines = [
         { id: 'line1', duration: 4000 },
@@ -234,21 +280,19 @@ button.check-btn {
 
     let currentTime = 500;
 
-    // Sequência de textos
     window.onload = () => {
         lines.forEach((step, index) => {
-            // Aparece
+            // Toca o som suave e mostra o texto
             setTimeout(() => {
+                playIntroTone(); // Som sintético aqui!
                 document.getElementById(step.id).style.opacity = "1";
             }, currentTime);
 
-            // Desaparece (se não for a última)
             if (index < lines.length - 1) {
                 setTimeout(() => {
                     document.getElementById(step.id).style.opacity = "0";
                 }, currentTime + step.duration - 1000);
             } else {
-                // Se for a última, some o texto e mostra o botão
                 setTimeout(() => {
                     document.getElementById(step.id).style.opacity = "0";
                     setTimeout(() => {
@@ -263,6 +307,9 @@ button.check-btn {
     };
 
     function startFragment() {
+        // Garante que o áudio está ligado quando clica no botão
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
         const intro = document.getElementById('intro-overlay');
         const bg = document.getElementById('background-container');
         const ui = document.getElementById('ui');
@@ -298,7 +345,9 @@ button.check-btn {
         if (validAnswers.includes(value)) {
             success();
         } else {
-            // Erro Visual (Tremida)
+            // TOCA O SOM DE ERRO SINTÉTICO
+            playErrorSound();
+
             feedback.style.opacity = 1;
             document.getElementById("ui").style.transform = "translateX(5px)";
             setTimeout(() => document.getElementById("ui").style.transform = "translateX(-5px)", 80);
@@ -307,7 +356,6 @@ button.check-btn {
     }
 
     function success() {
-        // Toca o som de acerto
         successSound.play().catch(e => console.log("Erro som:", e));
 
         // Salva progresso
