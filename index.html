@@ -16,7 +16,7 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* === INTRODUÇÃO (NOVO) === */
+        /* === INTRODUÇÃO === */
         #intro-overlay {
             position: fixed; inset: 0; background: #000; z-index: 100;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -45,13 +45,11 @@
             background: url('fundo-pc.jpg') no-repeat center center;
             background-size: cover; 
             transition: filter 1.5s ease-in-out, opacity 1.5s ease-in-out;
-            opacity: 0; /* Começa invisível */
+            opacity: 0;
         }
 
         @media (orientation: portrait) {
             #game-container { background-image: url('fundo-mobile.jpg'); }
-            
-            /* Ajuste as posições para o celular aqui */
             #rooster-spot { top: 40% !important; left: 5% !important; width: 25% !important; height: 20% !important; }
             #duck-spot { top: 42% !important; right: 5% !important; width: 25% !important; height: 20% !important; }
             .input-area { margin-top: 60% !important; }
@@ -107,7 +105,10 @@
             background: transparent; color: white; border-radius: 25px;
             cursor: pointer; opacity: 0; transition: opacity 1s;
             text-decoration: none; font-family: 'Montserrat', sans-serif;
-            text-transform: uppercase; font-size: 0.9rem; pointer-events: auto;
+            text-transform: uppercase; font-size: 0.9rem;
+            
+            /* CORREÇÃO AQUI: Começa sem clique */
+            pointer-events: none; 
         }
 
     </style>
@@ -149,7 +150,7 @@
         const lines = [
             { id: 't1', duration: 3500 },
             { id: 't2', duration: 3500 },
-            { id: 't3', duration: 2500 }, // Spoiler em vermelho dura menos para impacto
+            { id: 't3', duration: 2500 },
             { id: 't4', duration: 3500 }
         ];
 
@@ -180,7 +181,6 @@
         };
 
         function startGame() {
-            // Tenta iniciar áudio ambiente
             document.getElementById('bg-sound').volume = 0.5;
             document.getElementById('bg-sound').play().catch(e=>{});
 
@@ -232,7 +232,6 @@
         }
 
         function triggerEndSequence() {
-            // Toca som de sucesso
             const successAudio = document.getElementById('success-sound');
             successAudio.volume = 1.0;
             successAudio.play().catch(e=>{});
@@ -260,6 +259,8 @@
             
             setTimeout(() => {
                 nextBtn.style.opacity = 1;
+                // CORREÇÃO AQUI: Ativa o clique só agora
+                nextBtn.style.pointerEvents = "auto"; 
             }, 5000);
         }
 
