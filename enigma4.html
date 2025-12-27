@@ -13,7 +13,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* --- INTRODUÇÃO CONTEMPLATIVA --- */
+        /* --- INTRODUÇÃO --- */
         #intro-overlay {
             position: fixed; inset: 0; background: #050505; z-index: 200;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -22,7 +22,7 @@
 
         .intro-text {
             font-size: 1.1rem; line-height: 1.6; color: #00ff41;
-            max-width: 80%; position: absolute; /* Garante que todas aparecem no mesmo local */
+            max-width: 80%; position: absolute;
             opacity: 0; transition: opacity 1.5s ease;
             letter-spacing: 1px; font-weight: 300;
         }
@@ -37,14 +37,21 @@
         }
         #start-btn:hover { border-color: #00ff41; background: rgba(0, 255, 65, 0.05); }
 
-        /* --- ELEMENTOS DO JOGO --- */
+        /* --- INTERFACE DO JOGO --- */
         #status-bar {
             position: absolute; top: 20px; width: 100%; text-align: center;
             letter-spacing: 2px; font-size: 0.7rem; opacity: 0.4;
         }
 
-        #game { display: none; flex-direction: column; align-items: center; gap: 30px; z-index: 10; width: 90%; opacity: 0; transition: opacity 2s ease; }
-        .level-text { font-size: 1rem; color: #fff; opacity: 0.6; margin-bottom: 20px; }
+        #game { display: none; flex-direction: column; align-items: center; gap: 20px; z-index: 10; width: 90%; opacity: 0; transition: opacity 2s ease; }
+        
+        .level-text { font-size: 1rem; color: #fff; opacity: 0.6; }
+
+        /* NOVA BARRA DE STATUS DINÂMICA */
+        #user-prompt {
+            font-size: 0.75rem; font-weight: bold; letter-spacing: 1px;
+            min-height: 20px; transition: color 0.3s; margin-bottom: 10px;
+        }
         
         .symbols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         
@@ -74,11 +81,14 @@
    <p class="intro-text" id="t5">O silêncio faz parte da frequência.</p>
    <button id="start-btn" onclick="beginSychronization()">Sincronizar</button>
   </div>
+  
   <div id="status-bar">PROTOCOLO_ECO // ESTÁGIO_04</div>
+  
   <div id="game">
-   <div class="level-text">
-    SINCRONIA: <span id="level-num">1</span>/5
-   </div>
+   <div class="level-text">SINCRONIA: <span id="level-num">1</span>/5</div>
+   
+   <div id="user-prompt">CARREGANDO...</div>
+
    <div class="symbols">
     <div class="symbol" data-id="0" data-freq="261">Δ</div>
     <div class="symbol" data-id="1" data-freq="329">Ω</div>
@@ -86,13 +96,15 @@
     <div class="symbol" data-id="3" data-freq="523">Φ</div>
    </div>
   </div>
+
   <div id="final">
    <p style="letter-spacing: 2px; opacity: 0.6;">DÍGITO RECUPERADO</p>
-   <div class="digit">3</div>
+   <div class="digit">2</div>
    <button onclick="window.location.href='enigma5.html'">Finalizar</button>
   </div>
+
   <script>
-        // --- LÓGICA DA INTRODUÇÃO CORRIGIDA ---
+        // --- LÓGICA DA INTRODUÇÃO ---
         const timeline = [
             { id: 't1', duration: 4000 }, 
             { id: null, duration: 1000 },
@@ -106,34 +118,39 @@
         ];
 
         let currentTime = 500;
-
         timeline.forEach((step) => {
             if (step.id) {
-                // Aparece o texto
-                setTimeout(() => {
-                    document.getElementById(step.id).style.opacity = "1";
-                }, currentTime);
-
-                // Desaparece o texto (Fade Out) antes do próximo começar
-                setTimeout(() => {
-                    document.getElementById(step.id).style.opacity = "0";
-                }, currentTime + step.duration - 1000);
+                setTimeout(() => { document.getElementById(step.id).style.opacity = "1"; }, currentTime);
+                setTimeout(() => { document.getElementById(step.id).style.opacity = "0"; }, currentTime + step.duration - 1000);
             }
             currentTime += step.duration;
         });
 
-        // Mostra o botão após o silêncio final
         setTimeout(() => {
             const btn = document.getElementById('start-btn');
             btn.style.display = "block";
             setTimeout(() => btn.style.opacity = "1", 100);
         }, currentTime);
 
+        // --- SISTEMA DE STATUS ---
+        const promptEl = document.getElementById('user-prompt');
+
+        function updateStatus(state) {
+            if (state === 'escuto') {
+                promptEl.innerText = "[ SISTEMA: TRANSMITINDO... ]";
+                promptEl.style.color = "#00ff41"; // Verde Matrix
+            } else if (state === 'vez') {
+                promptEl.innerText = "[ USUÁRIO: AGUARDANDO SINCRONIA ]";
+                promptEl.style.color = "#fff"; // Branco
+            } else if (state === 'erro') {
+                promptEl.innerText = "[ ERRO: FREQUÊNCIA CORROMPIDA ]";
+                promptEl.style.color = "#ff3333"; // Vermelho
+            }
+        }
+
         function beginSychronization() {
             if(audioCtx.state === 'suspended') audioCtx.resume();
-            
             document.getElementById('intro-overlay').style.opacity = '0';
-            
             setTimeout(() => {
                 document.getElementById('intro-overlay').style.display = 'none';
                 const gameArea = document.getElementById('game');
@@ -173,13 +190,14 @@
         }
 
         async function playSequence() {
+            updateStatus('escuto'); // Atualiza texto para "Transmitindo"
             document.getElementById('game').style.pointerEvents = 'none';
+            
             for (let id of sequence) {
                 await new Promise(r => setTimeout(r, 800));
                 const el = document.querySelector(`[data-id="${id}"]`);
                 playNote(el.dataset.freq);
                 
-                // No nível 4 e 5, o brilho visual é removido (dificuldade sonora)
                 if (currentLevel < 4) {
                     el.classList.add('flash');
                     setTimeout(() => el.classList.remove('flash'), 400);
@@ -188,6 +206,8 @@
                     setTimeout(() => el.style.borderColor = "#00ff41", 400);
                 }
             }
+            
+            updateStatus('vez'); // Atualiza texto para "Aguardando Sincronia"
             document.getElementById('game').style.pointerEvents = 'all';
         }
 
@@ -209,19 +229,19 @@
                     else { currentLevel++; setTimeout(startLevel, 1000); }
                 }
             } else {
+                updateStatus('erro'); // Mostra texto de Erro
                 document.getElementById('game').classList.add('shake');
                 setTimeout(() => {
                     document.getElementById('game').classList.remove('shake');
                     currentLevel = 1;
                     startLevel();
-                }, 600);
+                }, 800);
             }
         }
 
         function win() {
             document.getElementById('game').style.display = 'none';
             document.getElementById('final').style.display = 'flex';
-            // Guardamos o dígito no localStorage para o cofre
             localStorage.setItem('digit_enigma4', '2');
         }
     </script>
