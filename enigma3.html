@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="pt-br">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>O Começo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" rel="stylesheet">
-  <style>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Começo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
 * {
     margin: 0;
     padding: 0;
@@ -99,7 +101,6 @@ input {
     border: 2px solid #333;
     font-size: 1.1rem;
     text-align: center;
-    outline: none;
 }
 
 /* FINAL */
@@ -113,64 +114,50 @@ input {
     align-items: center;
     z-index: 80;
     color: white;
-    text-align: center;
-}
-
-.reveal-label {
-    font-size: 0.9rem;
-    letter-spacing: 4px;
-    color: #aaa;
-    margin-bottom: 10px;
-}
-
-.number-6 {
-    font-size: 8rem;
-    margin-bottom: 40px;
-}
-
-.next-btn {
-    padding: 14px 36px;
-    border: 1px solid white;
-    background: transparent;
-    color: white;
-    font-size: 1rem;
-    border-radius: 30px;
-    cursor: pointer;
 }
 </style>
- </head>
- <body>
-  <!-- INTRO -->
-  <div id="start-overlay">
-   <div id="intro-text">
-    Algumas memórias não começam com palavras.
-    <br>
-    Elas apenas continuam.
-   </div>
-   <button class="start-btn" onclick="startExperience()">Iniciar Memória</button>
-  </div>
-  <!-- VÍDEO -->
-  <div id="video-container">
-   <video id="intro-video" playsinline>
-    <source src="video_intro.mp4" type="video/mp4">
-   </video>
-  </div>
-  <!-- JOGO -->
-  <div id="game-container">
-   <div class="ui-layer" id="ui-box">
-    <h2 class="question">Qual foi o começo?</h2>
-    <input type="text" id="answer-input" placeholder="Digite..." autocomplete="off">
-   </div>
-  </div>
-  <!-- FINAL -->
-  <div id="final-sequence">
-   <div class="reveal-label">DÍGITO REVELADO</div>
-   <div class="number-6">6</div>
-   <button class="next-btn" onclick="goNext()">Continuar</button>
-  </div>
-  <script>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="start-overlay">
+    <div id="intro-text">
+        Algumas memórias não começam com palavras.<br>
+        Elas apenas continuam.
+    </div>
+    <button class="start-btn" id="startBtn">Iniciar Memória</button>
+</div>
+
+<!-- VÍDEO -->
+<div id="video-container">
+    <video id="intro-video"
+           muted
+           preload="auto"
+           playsinline
+           webkit-playsinline>
+        <source src="video_intro.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- JOGO -->
+<div id="game-container">
+    <div class="ui-layer">
+        <h2 class="question">Qual foi o começo?</h2>
+        <input type="text" id="answer-input" placeholder="Digite...">
+    </div>
+</div>
+
+<!-- FINAL -->
+<div id="final-sequence">
+    <div>DÍGITO REVELADO</div>
+    <div style="font-size:8rem;margin:30px 0;">6</div>
+    <button onclick="goNext()">Continuar</button>
+</div>
+
+<script>
 const introText = document.getElementById('intro-text');
-const startBtn = document.querySelector('.start-btn');
+const startBtn = document.getElementById('startBtn');
 const video = document.getElementById('intro-video');
 const videoContainer = document.getElementById('video-container');
 const overlay = document.getElementById('start-overlay');
@@ -181,25 +168,35 @@ const finalScreen = document.getElementById('final-sequence');
 /* INTRO */
 window.onload = () => {
     setTimeout(() => introText.style.opacity = 1, 500);
-    setTimeout(() => startBtn.style.opacity = 1, 2500);
+    setTimeout(() => startBtn.style.opacity = 1, 2000);
 };
 
-function startExperience() {
-    video.play();
+/* START */
+startBtn.addEventListener('click', () => {
     videoContainer.style.opacity = 1;
     overlay.style.opacity = 0;
+
+    setTimeout(() => {
+        video.play().catch(() => {
+            // fallback se vídeo falhar
+            goToGame();
+        });
+    }, 300);
+
     setTimeout(() => overlay.style.display = 'none', 1000);
-}
+});
 
 /* VÍDEO → JOGO */
-video.onended = () => {
+video.addEventListener('ended', goToGame);
+
+function goToGame() {
     videoContainer.style.opacity = 0;
     setTimeout(() => {
         videoContainer.style.display = 'none';
         game.style.opacity = 1;
         input.focus();
     }, 1000);
-};
+}
 
 /* INPUT */
 input.addEventListener('keydown', e => {
@@ -219,9 +216,7 @@ function shake() {
 
 /* SUCESSO */
 function success() {
-    // salva progresso
     localStorage.setItem("digito1", "6");
-
     game.style.opacity = 0;
 
     setTimeout(() => {
@@ -230,10 +225,10 @@ function success() {
     }, 1500);
 }
 
-/* PRÓXIMO ENIGMA */
 function goNext() {
     window.location.href = "enigma2.html";
 }
 </script>
- </body>
+
+</body>
 </html>
